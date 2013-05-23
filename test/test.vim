@@ -9,18 +9,23 @@
 
 
 function! s:checker(filename)
-	let filetype_pattern = '`\w\+`'
-	let result = ""
+	try
+		let pos = getpos(".")
+		let filetype_pattern = '`\w\+`'
+		let result = ""
 
-	normal! gg0
-	while search(filetype_pattern, 'W')
-		if context_filetype#get() !=# expand('<cword>')
-			let result .= printf("%s:%d: bad context filetype\n", a:filename, line('.'))
-		endif
-	endwhile
+		normal! gg0
+		while search(filetype_pattern, 'W')
+			if context_filetype#get() !=# expand('<cword>')
+				let result .= printf("%s:%d: bad context filetype\n", a:filename, line('.'))
+			endif
+		endwhile
 
-	cgetexpr result
-	cwindo
+		cgetexpr result
+		cwindo
+	finally
+		call setpos(".", pos)
+	endtry
 endfunction
 
 command! ContextFiletypeTest call s:checker(expand("%:p"))
