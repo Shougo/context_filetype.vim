@@ -117,6 +117,7 @@ function! s:context_range(start_pattern, end_pattern)
 	if start == s:null_pos
 		return s:null_range
 	endif
+	let start[1] += 1
 
 	let end_pattern = a:end_pattern
 	if end_pattern =~ '\\1'
@@ -125,7 +126,7 @@ function! s:context_range(start_pattern, end_pattern)
 	endif
 
 	let end_forward = searchpos(end_pattern, 'ncW')
-	if end_forward== s:null_pos
+	if end_forward == s:null_pos
 		let end_forward = [line('$'), len(getline('$'))+1]
 	endi
 
@@ -133,15 +134,18 @@ function! s:context_range(start_pattern, end_pattern)
 	if s:pos_less_equal(start, end_backward)
 		return s:null_range
 	endif
+	let end_forward[1] -= 1
 
-	if start[1] == strdisplaywidth(getline(start[0]))
+	if start[1] >= strdisplaywidth(getline(start[0]))
 		let start[0] += 1
 		let start[1] = 1
 	endif
 
-	if end_forward[1] == 1
+	if end_forward[1] <= 1
 		let end_forward[0] -= 1
-		let end_forward[1] = strdisplaywidth(getline(end_forward[0]))
+		let len = strdisplaywidth(getline(end_forward[0]))
+		let len = len ? len : 1
+		let end_forward[1] = len
 	endif
 
 	return [start, end_forward]
@@ -161,7 +165,6 @@ function! s:is_in(start_pattern, end_pattern, pos)
 	return 0
 endfunction
 
-
 let s:null_context = {
 \	"filetype" : "",
 \	"range" : s:null_range,
@@ -175,7 +178,7 @@ function! s:get(filetype, context_filetypes)
 		return s:null_context
 	endif
 
-	let pos = [line('.'), col('.')]
+	let pos = [line('.'), mode() ==# 'i' ? col('.')-1 : col('.')]
 	for context in contexts
 		let range = s:context_range(context.start, context.end)
 
