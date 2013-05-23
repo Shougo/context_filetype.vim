@@ -60,7 +60,7 @@ let g:context_filetype#filetypes = {
 \		{
 \			'end': '</style>',
 \			'filetype': 'css',
-\			'start': '<script\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>'
+\			'start': '<style\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>'
 \		}
 \	],
 \	'int-nyaos': [{'end': '^\1', 'filetype': 'lua', 'start': '\<lua_e\s\+\(["'']\)'}],
@@ -94,7 +94,7 @@ let g:context_filetype#filetypes = {
 \		{
 \			'end': '</style>',
 \			'filetype': 'css',
-\			'start': '<script\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>'
+\			'start': '<style\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>'
 \		}
 \	],
 \	'markdown': [
@@ -109,12 +109,13 @@ function! s:pos_less_equal(a, b)
 endfunction
 
 let s:null_pos = [0, 0]
+let s:null_range = [[0, 0], [0, 0]]
 
 
-function! s:context_region(start_pattern, end_pattern)
+function! s:context_range(start_pattern, end_pattern)
 	let start = searchpos(a:start_pattern, "bneW")
 	if start == s:null_pos
-		return []
+		return s:null_range
 	endif
 
 	let end_pattern = a:end_pattern
@@ -130,12 +131,17 @@ function! s:context_region(start_pattern, end_pattern)
 
 	let end_backward = searchpos(end_pattern, 'bcnW')
 	if s:pos_less_equal(start, end_backward)
-		return []
+		return s:null_range
 	endif
 
-	if start[1] == len(getline(start[0]))
+	if start[1] == strdisplaywidth(getline(start[0]))
 		let start[0] += 1
 		let start[1] = 1
+	endif
+
+	if end_forward[1] == 1
+		let end_forward[0] -= 1
+		let end_forward[1] = strdisplaywidth(getline(end_forward[0]))
 	endif
 
 	return [start, end_forward]
@@ -143,56 +149,80 @@ endfunction
 
 
 function! s:is_in(start_pattern, end_pattern, pos)
-	let region = s:context_region(a:start_pattern, a:end_pattern)
-	if empty(region)
+	let range = s:context_range(a:start_pattern, a:end_pattern)
+	if empty(range)
 		return 0
 	endif
 
 	" start <= pos && pos <= end
-	if s:pos_less_equal(region[0], a:pos) && s:pos_less_equal(a:pos, region[1])
+	if s:pos_less_equal(range[0], a:pos) && s:pos_less_equal(a:pos, range[1])
 		return 1
 	endif
 	return 0
 endfunction
 
 
-function! s:get(filetype)
-	let base_filetype = a:filetype
-	let context_filetypes = extend(extend(
-\		copy(g:context_filetype#filetypes),
-\		get(g:, "neocomplcache_context_filetype_lists", {})),
-\		get(g:, "context_filetype_filetypes", {}),
-\	)
+let s:null_context = {
+\	"filetype" : "",
+\	"range" : s:null_range,
+\}
+
+function! s:get(filetype, context_filetypes)
+	let base_filetype = empty(a:filetype) ? 'nothing' : a:filetype
+	let context_filetypes = a:context_filetypes
 	let contexts = get(context_filetypes, base_filetype, [])
 	if empty(contexts)
-		return ""
+		return s:null_context
 	endif
 
 	let pos = [line('.'), col('.')]
 	for context in contexts
-		if s:is_in(context.start, context.end, pos)
+		let range = s:context_range(context.start, context.end)
+
+		" start <= pos && pos <= end
+		if s:pos_less_equal(range[0], pos) && s:pos_less_equal(pos, range[1])
+			let context_filetype = context.filetype
 			if context.filetype =~ '\\1'
 				let line = getline(searchpos(context.start, 'nbW')[0])
 				let match_list = matchlist(line, context.start)
-				return substitute(context.filetype, '\\1', '\=match_list[1]', 'g')
-			else
-				return context.filetype
+				let context_filetype = substitute(context.filetype, '\\1', '\=match_list[1]', 'g')
 			endif
+			return { "filetype" : context_filetype, "range" : range }
 		endif
 	endfor
 
-	return ""
+	return s:null_context
 endfunction
 
 
+function! s:get_nest(filetype, context_filetypes, ...)
+	let context = s:get(a:filetype, a:context_filetypes)
+	let prev_context = get(a:, 1, context)
+	if context.range != s:null_range
+		return s:get_nest(context.filetype, a:context_filetypes, context)
+	else
+		return prev_context
+	endif
+endfunction
+
 function! context_filetype#get(...)
 	let base_filetype = get(a:, 1, &filetype)
-	let context_filetype = s:get(base_filetype)
-	if empty(context_filetype)
+	let filetypes = g:context_filetype#filetypes
+	let context = s:get_nest(base_filetype, filetypes)
+
+	if context.range == s:null_range
 		return base_filetype
 	else
-		return context_filetype
+		return context.filetype
 	endif
+endfunction
+
+
+function! context_filetype#get_range(...)
+	let base_filetype = get(a:, 1, &filetype)
+	let filetypes = g:context_filetype#filetypes
+	let context = s:get_nest(base_filetype, filetypes)
+	return context.range
 endfunction
 
 
