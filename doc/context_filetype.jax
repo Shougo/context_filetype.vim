@@ -84,6 +84,13 @@ context_filetype#get([{filetype}])		*context_filetype#get()*
 		context filetype が見つからなかった場合は {filetype} が返され
 		る。
 
+context_filetype#get_range([{filetype}])	*context_filetype#get_range()*
+		カーソル位置の context の範囲を [[{start}], [{end}]] で返す。
+			[[3, 1], [4, 2]]
+		コンテキストの判定には {filetype} が使用され、{filetype} が渡
+		されなければ 'filetype' の値が使用される。
+		context のが見つからなかった場合は [[0,0], [0,0]] が返される。
+
 ==============================================================================
 変更履歴					*context_filetype-changelog*
 
