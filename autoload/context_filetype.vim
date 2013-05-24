@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: context_filetype.vim
 " AUTHOR: Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 19 May 2013.
+" Last Modified: 24 May 2013.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -94,7 +94,7 @@ function! s:initialize() "{{{
         \'<script\%( [^>]*\)\? type="text/coffeescript"\%( [^>]*\)\?>',
         \  'end' : '</script>'},
         \ {'filetype' : 'css', 'start' :
-        \'<script\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>',
+        \'<style\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>',
         \  'end' : '</style>'},
         \])
   call s:set_default_dictionary(
