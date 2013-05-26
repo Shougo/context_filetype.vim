@@ -5,6 +5,8 @@ python << EOF
 
 `python`
 
+vim.eval("`vim`")
+
 EOF `vim`
 
 

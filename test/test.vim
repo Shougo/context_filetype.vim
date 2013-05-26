@@ -16,7 +16,7 @@ function! s:checker(filename)
 
 		normal! gg0
 		while search(filetype_pattern, 'W')
-			if context_filetype#get() !=# expand('<cword>')
+			if context_filetype#get_filetype() !=# expand('<cword>')
 				let result .= printf("%s:%d: bad context filetype\n", a:filename, line('.'))
 			endif
 		endwhile
