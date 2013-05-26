@@ -117,11 +117,22 @@ function! s:pos_less_equal(a, b)
 	return a:a[0] == a:b[0] ? a:a[1] <= a:b[1] : a:a[0] <= a:b[0]
 endfunction
 
+
+function! s:is_in(start, end, pos)
+	" start <= pos && pos <= end
+	return s:pos_less_equal(a:start, a:pos) && s:pos_less_equal(a:pos, a:end)
+endfunction
+
+function! s:file_range()
+	return [[1, 1], [line('$'), len(getline('$'))+1]]
+endfunction
+
+
 let s:null_pos = [0, 0]
 let s:null_range = [[0, 0], [0, 0]]
 
 
-function! s:context_range(start_pattern, end_pattern)
+function! s:search_range(start_pattern, end_pattern)
 	let start = searchpos(a:start_pattern, "bneW")
 	if start == s:null_pos
 		return s:null_range
@@ -161,25 +172,13 @@ function! s:context_range(start_pattern, end_pattern)
 endfunction
 
 
-function! s:is_in(start_pattern, end_pattern, pos)
-	let range = s:context_range(a:start_pattern, a:end_pattern)
-	if empty(range)
-		return 0
-	endif
-
-	" start <= pos && pos <= end
-	if s:pos_less_equal(range[0], a:pos) && s:pos_less_equal(a:pos, range[1])
-		return 1
-	endif
-	return 0
-endfunction
-
 let s:null_context = {
 \	"filetype" : "",
 \	"range" : s:null_range,
 \}
 
-function! s:get_context(filetype, context_filetypes)
+
+function! s:get_context(filetype, context_filetypes, search_range)
 	let base_filetype = empty(a:filetype) ? 'nothing' : a:filetype
 	let context_filetypes = a:context_filetypes
 	let contexts = get(context_filetypes, base_filetype, [])
@@ -189,15 +188,21 @@ function! s:get_context(filetype, context_filetypes)
 
 	let pos = [line('.'), mode() ==# 'i' ? col('.')-1 : col('.')]
 	for context in contexts
-		let range = s:context_range(context.start, context.end)
+		let range = s:search_range(context.start, context.end)
 
 		" start <= pos && pos <= end
-		if s:pos_less_equal(range[0], pos) && s:pos_less_equal(pos, range[1])
+		" search_range[0] <= start && start <= search_range[1]
+		" search_range[0] <= end   && end   <= search_range[1]
+		if range != s:null_range
+\		&& s:is_in(range[0], range[1], pos)
+\		&& s:is_in(a:search_range[0], a:search_range[1], range[0])
+\		&& s:is_in(a:search_range[0], a:search_range[1], range[1])
 			let context_filetype = context.filetype
 			if context.filetype =~ '\\1'
 				let line = getline(searchpos(context.start, 'nbW')[0])
 				let match_list = matchlist(line, context.start)
-				let context_filetype = substitute(context.filetype, '\\1', '\=match_list[1]', 'g')
+				let context_filetype
+\					= substitute(context.filetype, '\\1', '\=match_list[1]', 'g')
 			endif
 			return { "filetype" : context_filetype, "range" : range }
 		endif
@@ -207,26 +212,20 @@ function! s:get_context(filetype, context_filetypes)
 endfunction
 
 
-function! s:get_nest_impl(filetype, context_filetypes, prev_contexts)
-	let context = s:get_context(a:filetype, a:context_filetypes)
-
+function! s:get_nest_impl(filetype, context_filetypes, prev_context)
+	let context = s:get_context(a:filetype, a:context_filetypes, a:prev_context.range)
 	if context.range != s:null_range
-\	&& empty(filter(copy(a:prev_contexts), "v:val.filetype == context.filetype"))
-		return s:get_nest_impl(
-\			context.filetype,
-\			a:context_filetypes,
-\			add(a:prev_contexts, context)
-\		)
+		return s:get_nest_impl(context.filetype, a:context_filetypes, context)
 	else
-		return a:prev_contexts[-1]
+		return a:prev_context
 	endif
 endfunction
 
-
 function! s:get_nest(filetype, context_filetypes)
-	let context = s:get_context(a:filetype, a:context_filetypes)
-	return s:get_nest_impl(context.filetype, a:context_filetypes, [context])
+	let context = s:get_context(a:filetype, a:context_filetypes, s:file_range())
+	return s:get_nest_impl(context.filetype, a:context_filetypes, context)
 endfunction
+
 
 
 function! context_filetype#get(...)
