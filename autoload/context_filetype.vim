@@ -233,20 +233,22 @@ function! context_filetype#get(...)
 	let base_filetype = get(a:, 1, &filetype)
 	let filetypes = s:get_filetypes({})
 	let context = s:get_nest(base_filetype, filetypes)
-
 	if context.range == s:null_range
-		return base_filetype
-	else
-		return context.filetype
+		let context.filetype = base_filetype
 	endif
+	return context
+endfunction
+
+
+function! context_filetype#get_filetype(...)
+	let base_filetype = get(a:, 1, &filetype)
+	return context_filetype#get(base_filetype).filetype
 endfunction
 
 
 function! context_filetype#get_range(...)
 	let base_filetype = get(a:, 1, &filetype)
-	let filetypes = s:get_filetypes({})
-	let context = s:get_nest(base_filetype, filetypes)
-	return context.range
+	return context_filetype#get(base_filetype).range
 endfunction
 
 

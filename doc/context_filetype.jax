@@ -57,17 +57,23 @@ g:context_filetype#filetypes			*g:context_filetype#filetypes*
 			matched pattern.
 >
 		" Examples:
-		if !exists('g:context_filetype#filetypes')
-		let g:context_filetype#filetypes = {}
-		endif
-		let g:context_filetype#filetypes.perl6 =
-		\ [{'filetype' : 'pir', 'start' : 'Q:PIR\s*{', 'end' : '}'}]
-		let g:context_filetype#filetypes.vim =
-		\ [{'filetype' : 'python',
-		\   'start' : '^\s*python <<\s*\(\h\w*\)', 'end' : '^\1'}]
+		let g:context_filetype_filetypes = {
+		\ "perl6" : [
+		\   {
+		\     'filetype' : 'pir',
+		\     'start' : 'Q:PIR\s*{',
+		\     'end' : '}'
+		\   }
+		\ ],
+		\ "vim" : [
+		\   {
+		\     'filetype' : 'python',
+		\     'start' : '^\s*python <<\s*\(\h\w*\)',
+		\     'end' : '^\1'
+		\   }
+		\ ]
+		\}
 <
-		Because it is complicated, refer to s:initialize() in
-		autoload/context_filetype.vim for the initial value.
 
 ------------------------------------------------------------------------------
 関数 						*context_filetype-functions*
@@ -78,18 +84,31 @@ context_filetype#version()			*context_filetype#version()*
 		用出来ます。
 
 context_filetype#get([{filetype}])		*context_filetype#get()*
-		カーソル位置の context filetype を返す。
+		カーソル位置のコンテキスト情報を下記のようなフォーマットで返
+		す。
+>
+		{
+		  "filetype" : "vim",
+		  "range" : [[3, 2], [10, 2]]
+		}
+<
 		コンテキストの判定には {filetype} が使用され、{filetype} が渡
 		されなければ 'filetype' の値が使用される。
-		context filetype が見つからなかった場合は {filetype} が返され
-		る。
+
+context_filetype#get_filetype([{filetype}])	*context_filetype#get_filetype()*
+		カーソル位置のコンテキストの filetype を返す。
+		コンテキストの判定には {filetype} が使用され、{filetype} が渡
+		されなければ 'filetype' の値が使用される。
+		コンテキストが見つからなかった場合は {filetype} が返される。
 
 context_filetype#get_range([{filetype}])	*context_filetype#get_range()*
-		カーソル位置の context の範囲を [[{start}], [{end}]] で返す。
-			[[3, 1], [4, 2]]
+		カーソル位置のコンテキストの範囲を [[{start}], [{end}]] で返す。
+>
+		[[3, 1], [4, 2]]
+<
 		コンテキストの判定には {filetype} が使用され、{filetype} が渡
 		されなければ 'filetype' の値が使用される。
-		context のが見つからなかった場合は [[0,0], [0,0]] が返される。
+		ンテキストが見つからなかった場合は [[0,0], [0,0]] が返される。
 
 ==============================================================================
 変更履歴					*context_filetype-changelog*
