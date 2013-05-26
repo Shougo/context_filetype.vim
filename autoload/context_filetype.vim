@@ -32,7 +32,7 @@ function! context_filetype#version() "{{{
 endfunction"}}}
 
 
-let g:context_filetype#filetypes = {
+let s:default_filetypes = {
 \	'c': [
 \		{'end': '$', 'filetype': 'masm', 'start': '_*asm_*\s\+\h\w*'},
 \		{'end': '}', 'filetype': 'masm', 'start': '_*asm_*\s*\%(\n\s*\)\?{'},
@@ -102,6 +102,15 @@ let g:context_filetype#filetypes = {
 \	],
 \}
 
+let g:context_filetype#filetypes = get(g:, "context_filetype#filetypes", {})
+
+function! s:get_filetypes(filetypes)
+	return extend(extend(
+\		copy(s:default_filetypes), g:context_filetype#filetypes),
+\		a:filetypes
+\	)
+endfunction
+
 
 " a <= b
 function! s:pos_less_equal(a, b)
@@ -170,7 +179,7 @@ let s:null_context = {
 \	"range" : s:null_range,
 \}
 
-function! s:get(filetype, context_filetypes)
+function! s:get_context(filetype, context_filetypes)
 	let base_filetype = empty(a:filetype) ? 'nothing' : a:filetype
 	let context_filetypes = a:context_filetypes
 	let contexts = get(context_filetypes, base_filetype, [])
@@ -198,19 +207,31 @@ function! s:get(filetype, context_filetypes)
 endfunction
 
 
-function! s:get_nest(filetype, context_filetypes, ...)
-	let context = s:get(a:filetype, a:context_filetypes)
-	let prev_context = get(a:, 1, context)
+function! s:get_nest_impl(filetype, context_filetypes, prev_contexts)
+	let context = s:get_context(a:filetype, a:context_filetypes)
+
 	if context.range != s:null_range
-		return s:get_nest(context.filetype, a:context_filetypes, context)
+\	&& empty(filter(copy(a:prev_contexts), "v:val.filetype == context.filetype"))
+		return s:get_nest_impl(
+\			context.filetype,
+\			a:context_filetypes,
+\			add(a:prev_contexts, context)
+\		)
 	else
-		return prev_context
+		return a:prev_contexts[-1]
 	endif
 endfunction
 
+
+function! s:get_nest(filetype, context_filetypes)
+	let context = s:get_context(a:filetype, a:context_filetypes)
+	return s:get_nest_impl(context.filetype, a:context_filetypes, [context])
+endfunction
+
+
 function! context_filetype#get(...)
 	let base_filetype = get(a:, 1, &filetype)
-	let filetypes = g:context_filetype#filetypes
+	let filetypes = s:get_filetypes({})
 	let context = s:get_nest(base_filetype, filetypes)
 
 	if context.range == s:null_range
@@ -223,9 +244,14 @@ endfunction
 
 function! context_filetype#get_range(...)
 	let base_filetype = get(a:, 1, &filetype)
-	let filetypes = g:context_filetype#filetypes
+	let filetypes = s:get_filetypes({})
 	let context = s:get_nest(base_filetype, filetypes)
 	return context.range
+endfunction
+
+
+function! context_filetype#default_filetypes()
+	return deepcopy(s:default_filetypes)
 endfunction
 
 
