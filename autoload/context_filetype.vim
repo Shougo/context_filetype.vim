@@ -23,6 +23,7 @@
 "     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 " }}}
 "=============================================================================
+scriptencoding utf-8
 
 let s:save_cpo = &cpo
 set cpo&vim
@@ -133,7 +134,7 @@ let s:null_range = [[0, 0], [0, 0]]
 
 
 function! s:search_range(start_pattern, end_pattern)
-	let start = searchpos(a:start_pattern, "bneW")
+	let start = searchpos(a:start_pattern, "bnceW")
 	if start == s:null_pos
 		return s:null_range
 	endif
@@ -150,7 +151,7 @@ function! s:search_range(start_pattern, end_pattern)
 		let end_forward = [line('$'), len(getline('$'))+1]
 	endi
 
-	let end_backward = searchpos(end_pattern, 'bcnW')
+	let end_backward = searchpos(end_pattern, 'bnW')
 	if s:pos_less_equal(start, end_backward)
 		return s:null_range
 	endif
@@ -180,21 +181,25 @@ let s:null_context = {
 
 function! s:get_context(filetype, context_filetypes, search_range)
 	let base_filetype = empty(a:filetype) ? 'nothing' : a:filetype
-	let context_filetypes = a:context_filetypes
-	let contexts = get(context_filetypes, base_filetype, [])
-	if empty(contexts)
+	let context_filetypes = get(a:context_filetypes, base_filetype, [])
+	if empty(context_filetypes)
 		return s:null_context
 	endif
 
-	let pos = [line('.'), mode() ==# 'i' ? col('.')-1 : col('.')]
-	for context in contexts
+	let pos = [line('.'), col('.')]
+	
+	for context in context_filetypes
 		let range = s:search_range(context.start, context.end)
+
+		" insert 時にカーソル座標がずれるのでそれの対応
+		let start = range[0]
+		let end   = [range[1][0], mode() ==# 'i' ?range[1][1]+1 : range[1][1]]
 
 		" start <= pos && pos <= end
 		" search_range[0] <= start && start <= search_range[1]
 		" search_range[0] <= end   && end   <= search_range[1]
 		if range != s:null_range
-\		&& s:is_in(range[0], range[1], pos)
+\		&& s:is_in(start, end, pos)
 \		&& s:is_in(a:search_range[0], a:search_range[1], range[0])
 \		&& s:is_in(a:search_range[0], a:search_range[1], range[1])
 			let context_filetype = context.filetype
