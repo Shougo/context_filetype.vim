@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: context_filetype.vim
 " AUTHOR: Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 19 May 2013.
+" Last Modified: 27 May 2013.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -65,6 +65,10 @@ let s:default_filetypes = {
 \		}
 \	],
 \	'int-nyaos': [{'end': '^\1', 'filetype': 'lua', 'start': '\<lua_e\s\+\(["'']\)'}],
+\	'lua': [
+\		{'end': '\\\@<!\1\s*)', 'filetype': 'vim', 'start': 'vim.command\s*(\([''"]\)'},
+\		{'end': '\\\@<!\1\s*)', 'filetype': 'vim', 'start': 'vim.eval\s*(\([''"]\)'}
+\	],
 \	'nyaos': [{'end': '^\1', 'filetype': 'lua', 'start': '\<lua_e\s\+\(["'']\)'}],
 \	'perl6': [{'end': '}', 'filetype': 'pir', 'start': 'Q:PIR\s*{'}],
 \	'python': [

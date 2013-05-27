@@ -32,6 +32,12 @@ lua << hoge
 
 hoge
 
+lua << hoge
+
+lua l = vim.eval('`vim`')
+
+EOF
+
 
 ruby << EOF
 
