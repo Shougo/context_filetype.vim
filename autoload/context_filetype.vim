@@ -28,8 +28,8 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:search_offset = 300
-let s:timeout = 10
+let s:search_offset = 30000
+let s:timeout = 1000
 
 function! context_filetype#version() "{{{
   return str2nr(printf('%02d%02d', 1, 0))
@@ -141,7 +141,7 @@ let s:null_range = [[0, 0], [0, 0]]
 
 
 function! s:search_range(start_pattern, end_pattern)
-	let start = searchpos(a:start_pattern, 'bnceW', line('.')-s:s:search_offset, s:timeout)
+	let start = searchpos(a:start_pattern, 'bnceW', line('.')-s:search_offset, s:timeout)
 	if start == s:null_pos
 		return s:null_range
 	endif
@@ -153,12 +153,12 @@ function! s:search_range(start_pattern, end_pattern)
 		let end_pattern = substitute(end_pattern, '\\1', '\=match_list[1]', 'g')
 	endif
 
-	let end_forward = searchpos(end_pattern, 'ncW', line('.')+s:s:search_offset, s:timeout)
+	let end_forward = searchpos(end_pattern, 'ncW', line('.')+s:search_offset, s:timeout)
 	if end_forward == s:null_pos
 		let end_forward = [line('$'), len(getline('$'))+1]
 	endi
 
-	let end_backward = searchpos(end_pattern, 'bnW', line('.')-s:s:search_offset, s:timeout)
+	let end_backward = searchpos(end_pattern, 'bnW', line('.')-s:search_offset, s:timeout)
 	if s:pos_less_equal(start, end_backward)
 		return s:null_range
 	endif
@@ -211,7 +211,7 @@ function! s:get_context(filetype, context_filetypes, search_range)
 \		&& s:is_in(a:search_range[0], a:search_range[1], range[1])
 			let context_filetype = context.filetype
 			if context.filetype =~ '\\1'
-				let line = getline(searchpos(context.start, 'nbW', line('.')-s:s:search_offset, s:timeout)[0])
+				let line = getline(searchpos(context.start, 'nbW', line('.')-s:search_offset, s:timeout)[0])
 				let match_list = matchlist(line, context.start)
 				let context_filetype
 \					= substitute(context.filetype, '\\1', '\=match_list[1]', 'g')
