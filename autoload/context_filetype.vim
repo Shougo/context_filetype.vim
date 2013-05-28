@@ -28,8 +28,6 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:timeout = 100000
-
 let g:context_filetype#filetypes = get(g:, "context_filetype#filetypes", {})
 
 let g:context_filetype#search_offset = get(g:, "context_filetype#search_offset", 3000)
@@ -188,7 +186,7 @@ function! s:search_range(start_pattern, end_pattern)"{{{
   let stopline_forward = s:stopline_forward()
   let stopline_back    = s:stopline_back()
 
-  let start = searchpos(a:start_pattern, 'bnceW', stopline_back, s:timeout)
+  let start = searchpos(a:start_pattern, 'bnceW', stopline_back)
   if start == s:null_pos
     return s:null_range
   endif
@@ -200,12 +198,12 @@ function! s:search_range(start_pattern, end_pattern)"{{{
     let end_pattern = substitute(end_pattern, '\\1', '\=match_list[1]', 'g')
   endif
 
-  let end_forward = searchpos(end_pattern, 'ncW', stopline_forward, s:timeout)
+  let end_forward = searchpos(end_pattern, 'ncW', stopline_forward)
   if end_forward == s:null_pos
     let end_forward = [line('$'), len(getline('$'))+1]
   endi
 
-  let end_backward = searchpos(end_pattern, 'bnW', stopline_back, s:timeout)
+  let end_backward = searchpos(end_pattern, 'bnW', stopline_back)
   if s:pos_less_equal(start, end_backward)
     return s:null_range
   endif
@@ -260,7 +258,7 @@ function! s:get_context(filetype, context_filetypes, search_range)"{{{
       if context.filetype =~ '\\1'
         let stopline_back = s:stopline_back()
         let line = getline(
-          \ searchpos(context.start, 'nbW', stopline_back, s:timeout)[0]
+          \ searchpos(context.start, 'nbW', stopline_back)[0]
         \ )
         let match_list = matchlist(line, context.start)
         let context_filetype
