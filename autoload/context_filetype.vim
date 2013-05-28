@@ -120,6 +120,17 @@ function! s:get_filetypes(filetypes)
 \	)
 endfunction
 
+function! s:stopline_forward()
+	let stopline_forward = line('.') + g:context_filetype#search_offset
+	return stopline_forward > line('$') ? line('$') : stopline_forward
+endfunction
+
+
+function! s:stopline_back()
+	let stopline_back = line('.') - g:context_filetype#search_offset
+	return stopline_back <= 1 ? 1 : stopline_back
+endfunction
+
 
 " a <= b
 function! s:pos_less_equal(a, b)
@@ -142,12 +153,8 @@ let s:null_range = [[0, 0], [0, 0]]
 
 
 function! s:search_range(start_pattern, end_pattern)
-	let stopline_forward = line('.') + g:context_filetype#search_offset
-	let stopline_forward
-\		= stopline_forward > line('$') ? line('$') : stopline_forward
-
-	let stopline_back = line('.') - g:context_filetype#search_offset
-	let stopline_back = stopline_back <= 1 ? 1 : stopline_back
+	let stopline_forward = s:stopline_forward()
+	let stopline_back    = s:stopline_back()
 
 	let start = searchpos(a:start_pattern, 'bnceW', stopline_back, s:timeout)
 	if start == s:null_pos
@@ -219,9 +226,10 @@ function! s:get_context(filetype, context_filetypes, search_range)
 \		&& s:is_in(a:search_range[0], a:search_range[1], range[1])
 			let context_filetype = context.filetype
 			if context.filetype =~ '\\1'
-				let stopline_back = line('.') - g:context_filetype#search_offset
-				let stopline_back = stopline_back <= 1 ? 1 : stopline_back
-				let line = getline(searchpos(context.start, 'nbW', stopline_back, s:timeout)[0])
+				let stopline_back = s:stopline_back()
+				let line = getline(
+\					searchpos(context.start, 'nbW', stopline_back, s:timeout)[0]
+\				)
 				let match_list = matchlist(line, context.start)
 				let context_filetype
 \					= substitute(context.filetype, '\\1', '\=match_list[1]', 'g')
