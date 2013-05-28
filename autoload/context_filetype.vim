@@ -274,7 +274,7 @@ endfunction
 
 
 function! context_filetype#default_filetypes()
-	return deepcopy(s:default_filetypes)
+	return copy(s:default_filetypes)
 endfunction
 
 
