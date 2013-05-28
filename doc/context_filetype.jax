@@ -75,6 +75,17 @@ g:context_filetype#filetypes			*g:context_filetype#filetypes*
 		\}
 <
 
+
+g:context_filetype#search_offset		*g:context_filetype#search_offset*
+		|searchpos| の使用時の {stopline} の閾値です。
+		カーソル位置からこの変数に設定されている行数の範囲のみを対象と
+		します。
+		動作が重く感じる場合はこの値を小さくして試して下さい。
+Default: >
+		let g:context_filetype#search_offset = 3000
+<
+
+
 ------------------------------------------------------------------------------
 関数 						*context_filetype-functions*
 
@@ -82,6 +93,11 @@ context_filetype#version()			*context_filetype#version()*
 		バージョン情報を返す。
 		Note: このライブラリがインストールされているかどうかの判定に使
 		用出来ます。
+
+						*context_filetype#default_filetypes()*
+context_filetype#default_filetypes()
+		デフォルトで設定されている |g:context_filetype#filetypes| の値
+		を返します。
 
 context_filetype#get([{filetype}])		*context_filetype#get()*
 		カーソル位置のコンテキスト情報を下記のようなフォーマットで返
