@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: context_filetype.vim
 " AUTHOR: Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 24 May 2013.
+" Last Modified: 28 May 2013.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -23,218 +23,355 @@
 "     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 " }}}
 "=============================================================================
+scriptencoding utf-8
 
 let s:save_cpo = &cpo
 set cpo&vim
+
+let g:context_filetype#filetypes = get(g:,
+      \ 'context_filetype#filetypes', {})
+
+let g:context_filetype#search_offset = get(g:,
+      \ 'context_filetype#search_offset', 3000)
 
 function! context_filetype#version() "{{{
   return str2nr(printf('%02d%02d', 1, 0))
 endfunction"}}}
 
-function! s:initialize() "{{{
-  " Compatibilities.
-  if exists('g:neocomplcache_context_filetype_lists')
-    let g:context_filetype#filetypes =
-          \ g:neocomplcache_context_filetype_lists
-  endif
-  call s:set_default('g:context_filetype#filetypes', {})
-
-  " Initialize context filetype.
-  call s:set_default_dictionary(
-        \ 'g:context_filetype#filetypes',
-        \ 'c,cpp', [
-        \ {'filetype' : 'masm',
-        \  'start' : '_*asm_*\s\+\h\w*', 'end' : '$'},
-        \ {'filetype' : 'masm',
-        \  'start' : '_*asm_*\s*\%(\n\s*\)\?{', 'end' : '}'},
-        \ {'filetype' : 'gas',
-        \  'start' : '_*asm_*\s*\%(_*volatile_*\s*\)\?(', 'end' : ');'},
-        \])
-  call s:set_default_dictionary(
-        \ 'g:context_filetype#filetypes',
-        \ 'd', [
-        \ {'filetype' : 'masm',
-        \  'start' : 'asm\s*\%(\n\s*\)\?{', 'end' : '}'},
-        \])
-  call s:set_default_dictionary(
-        \ 'g:context_filetype#filetypes',
-        \ 'perl6', [
-        \ {'filetype' : 'pir', 'start' : 'Q:PIR\s*{', 'end' : '}'},
-        \])
-  call s:set_default_dictionary(
-        \ 'g:context_filetype#filetypes',
-        \ 'vimshell', [
-        \ {'filetype' : 'vim',
-        \  'start' : 'vexe \([''"]\)', 'end' : '\\\@<!\1'},
-        \ {'filetype' : 'vim', 'start' : ' :\w*', 'end' : '\n'},
-        \ {'filetype' : 'vim', 'start' : ' vexe\s\+', 'end' : '\n'},
-        \])
-  call s:set_default_dictionary(
-        \ 'g:context_filetype#filetypes',
-        \ 'eruby', [
-        \ {'filetype' : 'ruby', 'start' : '<%[=#]\?', 'end' : '%>'},
-        \])
-  call s:set_default_dictionary(
-        \ 'g:context_filetype#filetypes',
-        \ 'vim', [
-        \ {'filetype' : 'python',
-        \  'start' : '^\s*py\%[thon\]3\? <<\s*\(\h\w*\)', 'end' : '^\1'},
-        \ {'filetype' : 'ruby',
-        \  'start' : '^\s*rub\%[y\] <<\s*\(\h\w*\)', 'end' : '^\1'},
-        \ {'filetype' : 'lua',
-        \  'start' : '^\s*lua <<\s*\(\h\w*\)', 'end' : '^\1'},
-        \])
-  call s:set_default_dictionary(
-        \ 'g:context_filetype#filetypes',
-        \ 'html,xhtml', [
-        \ {'filetype' : 'javascript', 'start' :
-        \'<script\%( [^>]*\)\? type="text/javascript"\%( [^>]*\)\?>',
-        \  'end' : '</script>'},
-        \ {'filetype' : 'coffee', 'start' :
-        \'<script\%( [^>]*\)\? type="text/coffeescript"\%( [^>]*\)\?>',
-        \  'end' : '</script>'},
-        \ {'filetype' : 'css', 'start' :
-        \'<style\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>',
-        \  'end' : '</style>'},
-        \])
-  call s:set_default_dictionary(
-        \ 'g:context_filetype#filetypes',
-        \ 'python', [
-        \ {'filetype' : 'vim',
-        \  'start' : 'vim.command\s*(\([''"]\)', 'end' : '\\\@<!\1\s*)'},
-        \ {'filetype' : 'vim',
-        \  'start' : 'vim.eval\s*(\([''"]\)', 'end' : '\\\@<!\1\s*)'},
-        \])
-  call s:set_default_dictionary(
-        \ 'g:context_filetype#filetypes',
-        \ 'help', [
-        \ {'filetype' : 'vim', 'start' : '^>', 'end' : '^<'},
-        \])
-  call s:set_default_dictionary(
-        \ 'g:context_filetype#filetypes',
-        \ 'nyaos,int-nyaos', [
-        \ {'filetype' : 'lua',
-        \  'start' : '\<lua_e\s\+\(["'']\)', 'end' : '^\1'},
-        \])
-endfunction"}}}
-
-if !exists('g:context_filetype#filetypes')
-  call s:initialize()
-endif
 
 function! context_filetype#get(...) "{{{
-  let old_filetype = get(a:000, 0, &filetype)
-  if old_filetype == ''
-    let old_filetype = 'nothing'
+  let base_filetype = get(a:, 1, &filetype)
+  let filetypes = s:get_filetypes({})
+  let context = s:get_nest(base_filetype, filetypes)
+  if context.range == s:null_range
+    let context.filetype = base_filetype
   endif
-
-  let dup_check = {}
-  while 1
-    let [range, new_filetype] = s:get(old_filetype)
-
-    " Check filetype root.
-    if get(dup_check, old_filetype, '') ==# new_filetype
-      let context_filetype = old_filetype
-      break
-    endif
-
-    " Save old -> new filetype graph.
-    let dup_check[old_filetype] = new_filetype
-    let old_filetype = new_filetype
-  endwhile
-
-  if context_filetype !=# &filetype
-        \ && exists('*neobundle#autoload#filetype()')
-    " Automatically load.
-    call neobundle#autoload#filetype()
-  endif
-
-  let b:context_filetype = {
-        \ 'filetype' : context_filetype,
-        \ 'range' : range }
-
-  return context_filetype
+  return context
 endfunction"}}}
-function! s:get(filetype) "{{{
-  " Default.
-  let filetype = a:filetype
-  if filetype == ''
-    let filetype = 'nothing'
+
+
+function! context_filetype#get_filetype(...) "{{{
+  let base_filetype = get(a:, 1, &filetype)
+  return context_filetype#get(base_filetype).filetype
+endfunction"}}}
+
+
+function! context_filetype#get_range(...) "{{{
+  let base_filetype = get(a:, 1, &filetype)
+  return context_filetype#get(base_filetype).range
+endfunction"}}}
+
+
+function! context_filetype#default_filetypes() "{{{
+  return copy(s:default_filetypes)
+endfunction"}}}
+
+
+" s:default_filetypes {{{
+let s:default_filetypes = {
+      \ 'c': [
+      \   {
+      \    'start': '_*asm_*\s\+\h\w*',
+      \    'end': '$', 'filetype': 'masm',
+      \   },
+      \   {
+      \    'start': '_*asm_*\s*\%(\n\s*\)\?{',
+      \    'end': '}', 'filetype': 'masm',
+      \   },
+      \   {
+      \    'start': '_*asm_*\s*\%(_*volatile_*\s*\)\?(',
+      \    'end': ');', 'filetype': 'gas',
+      \   }
+      \ ],
+      \ 'cpp': [
+      \   {
+      \    'start': '_*asm_*\s\+\h\w*',
+      \    'end': '$', 'filetype': 'masm',
+      \   },
+      \   {
+      \    'start': '_*asm_*\s*\%(\n\s*\)\?{',
+      \    'end': '}', 'filetype': 'masm',
+      \   },
+      \   {
+      \    'start': '_*asm_*\s*\%(_*volatile_*\s*\)\?(',
+      \    'end': ');', 'filetype': 'gas',
+      \   }
+      \ ],
+      \ 'd': [
+      \   {
+      \    'start': 'asm\s*\%(\n\s*\)\?{',
+      \    'end': '}', 'filetype': 'masm',
+      \   }
+      \ ],
+      \ 'eruby': [
+      \   {
+      \    'start': '<%[=#]\?',
+      \    'end': '%>', 'filetype': 'ruby',
+      \   }
+      \ ],
+      \ 'help': [
+      \   {
+      \    'start': '^>\|\s>$',
+      \    'end': '^<\|^\S', 'filetype': 'vim',
+      \   }
+      \ ],
+      \ 'html': [
+      \   {
+      \    'start':
+      \     '<script\%( [^>]*\)\? type="text/javascript"\%( [^>]*\)\?>',
+      \    'end': '</script>', 'filetype': 'javascript',
+      \   },
+      \   {
+      \    'start':
+      \     '<script\%( [^>]*\)\? type="text/coffeescript"\%( [^>]*\)\?>',
+      \    'end': '</script>', 'filetype': 'coffee',
+      \   },
+      \   {
+      \    'start': '<style\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>',
+      \    'end': '</style>', 'filetype': 'css',
+      \   }
+      \ ],
+      \ 'int-nyaos': [
+      \   {
+      \    'start': '\<lua_e\s\+\(["'']\)',
+      \    'end': '^\1', 'filetype': 'lua',
+      \   }
+      \ ],
+      \ 'lua': [
+      \   {
+      \    'start': 'vim.command\s*(\([''"]\)',
+      \    'end': '\\\@<!\1\s*)', 'filetype': 'vim',
+      \   },
+      \   {
+      \    'start': 'vim.eval\s*(\([''"]\)',
+      \    'end': '\\\@<!\1\s*)', 'filetype': 'vim',
+      \   }
+      \ ],
+      \ 'nyaos': [
+      \   {
+      \    'start': '\<lua_e\s\+\(["'']\)',
+      \    'end': '^\1', 'filetype': 'lua',
+      \   }
+      \ ],
+      \ 'perl6': [
+      \   {
+      \    'start': 'Q:PIR\s*{',
+      \    'end': '}', 'filetype': 'pir',
+      \   }
+      \ ],
+      \ 'python': [
+      \   {
+      \    'start': 'vim.command\s*(\([''"]\)',
+      \    'end': '\\\@<!\1\s*)', 'filetype': 'vim',
+      \   },
+      \   {
+      \    'start': 'vim.eval\s*(\([''"]\)',
+      \    'end': '\\\@<!\1\s*)', 'filetype': 'vim',
+      \   }
+      \ ],
+      \ 'vim': [
+      \   {
+      \    'start': '^\s*py\%[thon\]3\? <<\s*\(\h\w*\)',
+      \    'end': '^\1', 'filetype': 'python',
+      \   },
+      \   {
+      \    'start': '^\s*rub\%[y\] <<\s*\(\h\w*\)',
+      \    'end': '^\1', 'filetype': 'ruby',
+      \   },
+      \   {
+      \    'start': '^\s*lua <<\s*\(\h\w*\)',
+      \    'end': '^\1', 'filetype': 'lua',
+      \   }
+      \ ],
+      \ 'vimshell': [
+      \   {
+      \    'start': 'vexe \([''"]\)',
+      \    'end': '\\\@<!\1', 'filetype': 'vim',
+      \   },
+      \   {
+      \    'start': ' :\w*',
+      \    'end': '\n', 'filetype': 'vim',
+      \   },
+      \   {
+      \    'start': ' vexe\s\+',
+      \    'end': '\n', 'filetype': 'vim',
+      \   }
+      \ ],
+      \ 'xhtml': [
+      \   {
+      \    'start':
+      \     '<script\%( [^>]*\)\? type="text/javascript"\%( [^>]*\)\?>',
+      \    'end': '</script>', 'filetype': 'javascript',
+      \   },
+      \   {
+      \    'start':
+      \     '<script\%( [^>]*\)\? type="text/coffeescript"\%( [^>]*\)\?>',
+      \    'end': '</script>', 'filetype': 'coffee',
+      \   },
+      \   {
+      \    'start': '<style\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>',
+      \    'end': '</style>', 'filetype': 'css',
+      \   }
+      \ ],
+      \ 'markdown': [
+      \   {
+      \    'start' : '^\s*```\s*\(\h\w*\)',
+      \    'end' : '^```$', 'filetype' : '\1',
+      \   },
+      \ ],
+\}"}}}
+
+
+function! s:get_filetypes(filetypes) "{{{
+  return extend(extend(
+        \ copy(s:default_filetypes), g:context_filetype#filetypes),
+        \ a:filetypes
+        \)
+endfunction"}}}
+
+
+function! s:stopline_forward() "{{{
+  let stopline_forward = line('.') + g:context_filetype#search_offset
+  return (stopline_forward > line('$')) ? line('$') : stopline_forward
+endfunction"}}}
+
+
+function! s:stopline_back() "{{{
+  let stopline_back = line('.') - g:context_filetype#search_offset
+  return (stopline_back <= 1) ? 1 : stopline_back
+endfunction"}}}
+
+
+" a <= b "{{{
+function! s:pos_less_equal(a, b)
+  return a:a[0] == a:b[0] ? a:a[1] <= a:b[1] : a:a[0] <= a:b[0]
+endfunction"}}}
+
+
+function! s:is_in(start, end, pos) "{{{
+  " start <= pos && pos <= end
+  return s:pos_less_equal(a:start, a:pos) && s:pos_less_equal(a:pos, a:end)
+endfunction"}}}
+
+
+function! s:file_range() "{{{
+  return [[1, 1], [line('$'), len(getline('$'))+1]]
+endfunction"}}}
+
+
+let s:null_pos = [0, 0]
+let s:null_range = [[0, 0], [0, 0]]
+
+
+function! s:search_range(start_pattern, end_pattern) "{{{
+  let stopline_forward = s:stopline_forward()
+  let stopline_back    = s:stopline_back()
+
+  let start = searchpos(a:start_pattern, 'bnceW', stopline_back)
+  if start == s:null_pos
+    return s:null_range
+  endif
+  let start[1] += 1
+
+  let end_pattern = a:end_pattern
+  if end_pattern =~ '\\1'
+    let match_list = matchlist(getline(start[0]), a:start_pattern)
+    let end_pattern = substitute(end_pattern, '\\1', '\=match_list[1]', 'g')
   endif
 
-  " Default range.
-  let range = [ 1, line('$') ]
+  let end_forward = searchpos(end_pattern, 'ncW', stopline_forward)
+  if end_forward == s:null_pos
+    let end_forward = [line('$'), len(getline('$'))+1]
+  endi
+
+  let end_backward = searchpos(end_pattern, 'bnW', stopline_back)
+  if s:pos_less_equal(start, end_backward)
+    return s:null_range
+  endif
+  let end_forward[1] -= 1
+
+  if start[1] >= strdisplaywidth(getline(start[0]))
+    let start[0] += 1
+    let start[1] = 1
+  endif
+
+  if end_forward[1] <= 1
+    let end_forward[0] -= 1
+    let len = strdisplaywidth(getline(end_forward[0]))
+    let len = len ? len : 1
+    let end_forward[1] = len
+  endif
+
+  return [start, end_forward]
+endfunction"}}}
+
+
+let s:null_context = {
+\ 'filetype' : '',
+\ 'range' : s:null_range,
+\}
+
+
+function! s:get_context(filetype, context_filetypes, search_range) "{{{
+  let base_filetype = empty(a:filetype) ? 'nothing' : a:filetype
+  let context_filetypes = get(a:context_filetypes, base_filetype, [])
+  if empty(context_filetypes)
+    return s:null_context
+  endif
 
   let pos = [line('.'), col('.')]
-  for include in get(g:context_filetype#filetypes, filetype, [])
-    let start_backward = searchpos(include.start, 'bneW')
 
-    " Check pos > start.
-    if start_backward[0] == 0 || s:compare_pos(start_backward, pos) > 0
-      continue
-    endif
+  for context in context_filetypes
+    let range = s:search_range(context.start, context.end)
 
-    let end_pattern = include.end
-    if end_pattern =~ '\\1'
-      let match_list = matchlist(getline(start_backward[0]), include.start)
-      let end_pattern = substitute(end_pattern, '\\1', '\=match_list[1]', 'g')
-    endif
-    let end_forward = searchpos(end_pattern, 'nW')
-    if end_forward[0] == 0
-      let end_forward = [line('$'), len(getline('$'))+1]
-    endif
+    " insert 時にカーソル座標がずれるのでそれの対応
+    let start = range[0]
+    let end   = [range[1][0], (mode() ==# 'i') ? range[1][1]+1 : range[1][1]]
 
-    " Check end > pos.
-    if s:compare_pos(pos, end_forward) > 0
-      continue
+    " start <= pos && pos <= end
+    " search_range[0] <= start && start <= search_range[1]
+    " search_range[0] <= end   && end   <= search_range[1]
+    if range != s:null_range
+          \  && s:is_in(start, end, pos)
+          \  && s:is_in(a:search_range[0], a:search_range[1], range[0])
+          \  && s:is_in(a:search_range[0], a:search_range[1], range[1])
+      let context_filetype = context.filetype
+      if context.filetype =~ '\\1'
+        let stopline_back = s:stopline_back()
+        let line = getline(
+              \ searchpos(context.start, 'nbW', stopline_back)[0]
+              \ )
+        let match_list = matchlist(line, context.start)
+        let context_filetype = substitute(context.filetype,
+              \ '\\1', '\=match_list[1]', 'g')
+      endif
+      return { "filetype" : context_filetype, "range" : range }
     endif
-
-    let end_backward = searchpos(end_pattern, 'bnW')
-
-    " Check start <= end.
-    if s:compare_pos(start_backward, end_backward) < 0
-      continue
-    endif
-
-    if start_backward[1] == len(getline(start_backward[0]))
-      " Next line.
-      let start_backward[0] += 1
-      let start_backward[1] = 1
-    endif
-    if end_forward[1] == 1
-      " Previous line.
-      let end_forward[0] -= 1
-      let end_forward[1] = len(getline(end_forward[0]))
-    endif
-
-    let range = [ start_backward, end_forward ]
-    return [include.filetype, range]
   endfor
 
-  return filetype
+  return s:null_context
 endfunction"}}}
 
-function! s:compare_pos(i1, i2)
-  return a:i1[0] == a:i2[0] ? a:i1[1] - a:i2[1] : a:i1[0] - a:i2[0]
-endfunction"
 
-function! s:set_default(var, val, ...)  "{{{
-  if !exists(a:var) || type({a:var}) != type(a:val)
-    let alternate_var = get(a:000, 0, '')
-
-    let {a:var} = exists(alternate_var) ?
-          \ {alternate_var} : a:val
+function! s:get_nest_impl(filetype, context_filetypes, prev_context) "{{{
+  let context = s:get_context(a:filetype,
+        \ a:context_filetypes, a:prev_context.range)
+  if context.range != s:null_range
+    return s:get_nest_impl(context.filetype, a:context_filetypes, context)
+  else
+    return a:prev_context
   endif
 endfunction"}}}
-function! s:set_dictionary_helper(variable, keys, pattern) "{{{
-  for key in split(a:keys, '\s*,\s*')
-    if !has_key(a:variable, key)
-      let a:variable[key] = a:pattern
-    endif
-  endfor
+
+
+function! s:get_nest(filetype, context_filetypes) "{{{
+  let context = s:get_context(a:filetype, a:context_filetypes, s:file_range())
+  return s:get_nest_impl(context.filetype, a:context_filetypes, context)
 endfunction"}}}
+
+
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
 
-" vim: foldmethod=marker
+" vim: set foldmethod=marker tabstop=2 expandtab:

@@ -1,0 +1,137 @@
+*context_filetype.txt*	Vim script の context filetype ライブラリ
+
+Version: 1.0
+Author : Shougo <Shougo.Matsu@gmail.com>
+License: MIT license  {{{
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    "Software"), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
+    The above copyright notice and this permission notice shall be included
+    in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+    OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+}}}
+
+CONTENTS					*context_filetype-contents*
+
+概要			|context_filetype-introduction|
+インターフェース	|context_filetype-interface|
+  変数			  |context_filetype-variables|
+  関数			  |context_filetype-functions|
+変更履歴		|context_filetype-changelog|
+
+==============================================================================
+概要						*context_filetype-introduction*
+
+カーソル位置を基準とした、文脈から特定の filetype を判定する為の
+Vim script ライブラリです。
+コード中に他の言語を埋め込むような言語で利用する事が出来ます。
+
+また、このプラグインは他のプラグインから使用する事を想定して作られています。
+
+
+==============================================================================
+インターフェース				*context_filetype-interface*
+
+------------------------------------------------------------------------------
+変数 						*context_filetype-variables*
+
+g:context_filetype#filetypes			*g:context_filetype#filetypes*
+		It is a dictionary to define context filetypes.
+		The item is a list of dictionaries.
+
+		The keys and valufs are below.
+		"filetype" : includes filetype name.
+		"start" : filetype start pattern.
+		"end" : filetype end pattern.  You can use \1 to refer start's
+			matched pattern.
+>
+		" Examples:
+		let g:context_filetype_filetypes = {
+		\ "perl6" : [
+		\   {
+		\     'filetype' : 'pir',
+		\     'start' : 'Q:PIR\s*{',
+		\     'end' : '}'
+		\   }
+		\ ],
+		\ "vim" : [
+		\   {
+		\     'filetype' : 'python',
+		\     'start' : '^\s*python <<\s*\(\h\w*\)',
+		\     'end' : '^\1'
+		\   }
+		\ ]
+		\}
+<
+
+
+g:context_filetype#search_offset		*g:context_filetype#search_offset*
+		|searchpos| の使用時の {stopline} の閾値です。
+		カーソル位置からこの変数に設定されている行数の範囲のみを対象と
+		します。
+		動作が重く感じる場合はこの値を小さくして試して下さい。
+Default: >
+		let g:context_filetype#search_offset = 3000
+<
+
+
+------------------------------------------------------------------------------
+関数 						*context_filetype-functions*
+
+context_filetype#version()			*context_filetype#version()*
+		バージョン情報を返す。
+		Note: このライブラリがインストールされているかどうかの判定に使
+		用出来ます。
+
+						*context_filetype#default_filetypes()*
+context_filetype#default_filetypes()
+		デフォルトで設定されている |g:context_filetype#filetypes| の値
+		を返します。
+
+context_filetype#get([{filetype}])		*context_filetype#get()*
+		カーソル位置のコンテキスト情報を下記のようなフォーマットで返
+		す。
+>
+		{
+		  "filetype" : "vim",
+		  "range" : [[3, 2], [10, 2]]
+		}
+<
+		コンテキストの判定には {filetype} が使用され、{filetype} が渡
+		されなければ 'filetype' の値が使用される。
+
+context_filetype#get_filetype([{filetype}])	*context_filetype#get_filetype()*
+		カーソル位置のコンテキストの filetype を返す。
+		コンテキストの判定には {filetype} が使用され、{filetype} が渡
+		されなければ 'filetype' の値が使用される。
+		コンテキストが見つからなかった場合は {filetype} が返される。
+
+context_filetype#get_range([{filetype}])	*context_filetype#get_range()*
+		カーソル位置のコンテキストの範囲を [[{start}], [{end}]] で返す。
+>
+		[[3, 1], [4, 2]]
+<
+		コンテキストの判定には {filetype} が使用され、{filetype} が渡
+		されなければ 'filetype' の値が使用される。
+		ンテキストが見つからなかった場合は [[0,0], [0,0]] が返される。
+
+==============================================================================
+変更履歴					*context_filetype-changelog*
+
+2013-05-19
+- Initial version.
+- Added documentation.
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:noet:fen:noet:
