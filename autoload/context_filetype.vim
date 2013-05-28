@@ -199,12 +199,12 @@ let s:default_filetypes = {
       \ 'xhtml': [
       \   {
       \    'start':
-      \'<script\%( [^>]*\)\? type="text/javascript"\%( [^>]*\)\?>'
+      \     '<script\%( [^>]*\)\? type="text/javascript"\%( [^>]*\)\?>'
       \    'end': '</script>', 'filetype': 'javascript',
       \   },
       \   {
       \    'start':
-      \'<script\%( [^>]*\)\? type="text/coffeescript"\%( [^>]*\)\?>'
+      \     '<script\%( [^>]*\)\? type="text/coffeescript"\%( [^>]*\)\?>'
       \    'end': '</script>', 'filetype': 'coffee',
       \   },
       \   {
