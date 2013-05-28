@@ -214,7 +214,7 @@ let s:default_filetypes = {
       \ ],
       \ 'markdown': [
       \   {
-      \    'start' : '^\s*```s*\(\h\w*\)',
+      \    'start' : '^\s*```\s*\(\h\w*\)',
       \    'end' : '^```$', 'filetype' : '\1'
       \   },
       \ ],
