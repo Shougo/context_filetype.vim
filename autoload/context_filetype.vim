@@ -71,151 +71,152 @@ endfunction"}}}
 let s:default_filetypes = {
       \ 'c': [
       \   {
-      \    'start': '_*asm_*\s\+\h\w*'
+      \    'start': '_*asm_*\s\+\h\w*',
       \    'end': '$', 'filetype': 'masm',
       \   },
       \   {
-      \    'start': '_*asm_*\s*\%(\n\s*\)\?{'
+      \    'start': '_*asm_*\s*\%(\n\s*\)\?{',
       \    'end': '}', 'filetype': 'masm',
       \   },
       \   {
-      \    'start': '_*asm_*\s*\%(_*volatile_*\s*\)\?('
+      \    'start': '_*asm_*\s*\%(_*volatile_*\s*\)\?(',
       \    'end': ');', 'filetype': 'gas',
       \   }
       \ ],
       \ 'cpp': [
       \   {
-      \    'start': '_*asm_*\s\+\h\w*'
+      \    'start': '_*asm_*\s\+\h\w*',
       \    'end': '$', 'filetype': 'masm',
       \   },
       \   {
-      \    'start': '_*asm_*\s*\%(\n\s*\)\?{'
+      \    'start': '_*asm_*\s*\%(\n\s*\)\?{',
       \    'end': '}', 'filetype': 'masm',
       \   },
       \   {
-      \    'start': '_*asm_*\s*\%(_*volatile_*\s*\)\?('
+      \    'start': '_*asm_*\s*\%(_*volatile_*\s*\)\?(',
       \    'end': ');', 'filetype': 'gas',
       \   }
       \ ],
       \ 'd': [
       \   {
-      \    'start': 'asm\s*\%(\n\s*\)\?{'
+      \    'start': 'asm\s*\%(\n\s*\)\?{',
       \    'end': '}', 'filetype': 'masm',
       \   }
       \ ],
       \ 'eruby': [
       \   {
-      \    'start': '<%[=#]\?'
+      \    'start': '<%[=#]\?',
       \    'end': '%>', 'filetype': 'ruby',
       \   }
       \ ],
       \ 'help': [
       \   {
-      \    'start': '^>\|\s>$'
+      \    'start': '^>\|\s>$',
       \    'end': '^<\|^\S', 'filetype': 'vim',
       \   }
       \ ],
       \ 'html': [
       \   {
       \    'start':
-      \'<script\%( [^>]*\)\? type="text/javascript"\%( [^>]*\)\?>'
+      \     '<script\%( [^>]*\)\? type="text/javascript"\%( [^>]*\)\?>',
       \    'end': '</script>', 'filetype': 'javascript',
       \   },
       \   {
       \    'start':
-      \'<script\%( [^>]*\)\? type="text/coffeescript"\%( [^>]*\)\?>'
+      \     '<script\%( [^>]*\)\? type="text/coffeescript"\%( [^>]*\)\?>',
       \    'end': '</script>', 'filetype': 'coffee',
       \   },
       \   {
-      \    'start': '<style\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>'
+      \    'start': '<style\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>',
       \    'end': '</style>', 'filetype': 'css',
       \   }
       \ ],
       \ 'int-nyaos': [
       \   {
-      \    'start': '\<lua_e\s\+\(["'']\)'
+      \    'start': '\<lua_e\s\+\(["'']\)',
       \    'end': '^\1', 'filetype': 'lua',
       \   }
       \ ],
       \ 'lua': [
       \   {
-      \    'start': 'vim.command\s*(\([''"]\)'
+      \    'start': 'vim.command\s*(\([''"]\)',
       \    'end': '\\\@<!\1\s*)', 'filetype': 'vim',
       \   },
       \   {
-      \    'start': 'vim.eval\s*(\([''"]\)'
+      \    'start': 'vim.eval\s*(\([''"]\)',
       \    'end': '\\\@<!\1\s*)', 'filetype': 'vim',
       \   }
       \ ],
       \ 'nyaos': [
       \   {
-      \    'start': '\<lua_e\s\+\(["'']\)'
+      \    'start': '\<lua_e\s\+\(["'']\)',
       \    'end': '^\1', 'filetype': 'lua',
       \   }
       \ ],
       \ 'perl6': [
       \   {
-      \    'start': 'Q:PIR\s*{'
+      \    'start': 'Q:PIR\s*{',
       \    'end': '}', 'filetype': 'pir',
       \   }
       \ ],
       \ 'python': [
       \   {
-      \    'start': 'vim.command\s*(\([''"]\)'
+      \    'start': 'vim.command\s*(\([''"]\)',
       \    'end': '\\\@<!\1\s*)', 'filetype': 'vim',
       \   },
       \   {
-      \    'start': 'vim.eval\s*(\([''"]\)'
+      \    'start': 'vim.eval\s*(\([''"]\)',
       \    'end': '\\\@<!\1\s*)', 'filetype': 'vim',
       \   }
       \ ],
       \ 'vim': [
       \   {
-      \    'start': '^\s*py\%[thon\]3\? <<\s*\(\h\w*\)'
+      \    'start': '^\s*py\%[thon\]3\? <<\s*\(\h\w*\)',
       \    'end': '^\1', 'filetype': 'python',
       \   },
       \   {
-      \    'start': '^\s*rub\%[y\] <<\s*\(\h\w*\)'
+      \    'start': '^\s*rub\%[y\] <<\s*\(\h\w*\)',
       \    'end': '^\1', 'filetype': 'ruby',
       \   },
       \   {
-      \    'start': '^\s*lua <<\s*\(\h\w*\)'
+      \    'start': '^\s*lua <<\s*\(\h\w*\)',
       \    'end': '^\1', 'filetype': 'lua',
       \   }
       \ ],
       \ 'vimshell': [
       \   {
-      \    'start': 'vexe \([''"]\)'},
+      \    'start': 'vexe \([''"]\)',
       \    'end': '\\\@<!\1', 'filetype': 'vim',
+      \   },
       \   {
-      \    'start': ' :\w*'
+      \    'start': ' :\w*',
       \    'end': '\n', 'filetype': 'vim',
       \   },
       \   {
-      \    'start': ' vexe\s\+'
+      \    'start': ' vexe\s\+',
       \    'end': '\n', 'filetype': 'vim',
       \   }
       \ ],
       \ 'xhtml': [
       \   {
       \    'start':
-      \     '<script\%( [^>]*\)\? type="text/javascript"\%( [^>]*\)\?>'
+      \     '<script\%( [^>]*\)\? type="text/javascript"\%( [^>]*\)\?>',
       \    'end': '</script>', 'filetype': 'javascript',
       \   },
       \   {
       \    'start':
-      \     '<script\%( [^>]*\)\? type="text/coffeescript"\%( [^>]*\)\?>'
+      \     '<script\%( [^>]*\)\? type="text/coffeescript"\%( [^>]*\)\?>',
       \    'end': '</script>', 'filetype': 'coffee',
       \   },
       \   {
-      \    'start': '<style\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>'
+      \    'start': '<style\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>',
       \    'end': '</style>', 'filetype': 'css',
       \   }
       \ ],
       \ 'markdown': [
       \   {
       \    'start' : '^\s*```\s*\(\h\w*\)',
-      \    'end' : '^```$', 'filetype' : '\1'
+      \    'end' : '^```$', 'filetype' : '\1',
       \   },
       \ ],
 \}"}}}
@@ -325,7 +326,7 @@ function! s:get_context(filetype, context_filetypes, search_range) "{{{
 
     " insert 時にカーソル座標がずれるのでそれの対応
     let start = range[0]
-    let end   = [range[1][0], (mode() ==# 'i' ?) range[1][1]+1 : range[1][1]]
+    let end   = [range[1][0], (mode() ==# 'i') ? range[1][1]+1 : range[1][1]]
 
     " start <= pos && pos <= end
     " search_range[0] <= start && start <= search_range[1]
