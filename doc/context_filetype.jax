@@ -41,20 +41,78 @@ Vim script ライブラリです。
 
 
 ==============================================================================
+サポート					*context_filetype-support*
+
+各 filetype で対応しているコンテキストの一覧です。
+
+- "c"
+ masm
+ gas
+
+- "cpp"
+ masm
+ gas
+
+- "d"
+ masm
+
+- "eruby"
+ ruby
+
+- "help"
+ vim
+
+- "html"
+ javascript
+ coffee
+ css
+
+- "int-nyaos"
+ lua
+
+- "lua"
+ vim
+
+- "nyaos"
+ lua
+
+- "perl16"
+ pir
+
+- "python"
+ vim
+
+- "vim"
+ python
+ ruby
+ lua
+
+- "vimshell"
+ vim
+
+- "xhtml"
+ javascript
+ coffee
+ css
+
+- "markdown"
+
+
+==============================================================================
 インターフェース				*context_filetype-interface*
 
 ------------------------------------------------------------------------------
 変数 						*context_filetype-variables*
 
 g:context_filetype#filetypes			*g:context_filetype#filetypes*
-		It is a dictionary to define context filetypes.
-		The item is a list of dictionaries.
+		各 filetype を判定する為の辞書です。
+		各 filetype に対してリストで設定する事ができます。
 
-		The keys and valufs are below.
-		"filetype" : includes filetype name.
-		"start" : filetype start pattern.
-		"end" : filetype end pattern.  You can use \1 to refer start's
-			matched pattern.
+		"filetype" : 判定を行う filetype
+		"start"    : コンテキストの開始パターン
+		"end"      : コンテキストの終了パターン
+		              これに \1 が設定されている場合は "start" にマッ
+		              チした値になります。
 >
 		" Examples:
 		let g:context_filetype_filetypes = {
