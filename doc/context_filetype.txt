@@ -73,7 +73,7 @@ context_filetype#version()			*context_filetype#version()*
 
 context_filetype#get([{filetype}])		*context_filetype#get()*
 		Get completion filetype from {filetype}.
-		If you ommit {filetype}, 'filetype' will be used.
+		If you omit {filetype}, 'filetype' will be used.
 
 ==============================================================================
 CHANGELOG					*context_filetype-changelog*
