@@ -134,7 +134,7 @@ let s:default_filetypes = {
       \ 'int-nyaos': [
       \   {
       \    'start': '\<lua_e\s\+\(["'']\)',
-      \    'end': '^\1', 'filetype': 'lua',
+      \    'end': '\1\@<!\1\1\@!', 'filetype': 'lua',
       \   }
       \ ],
       \ 'lua': [
@@ -150,7 +150,7 @@ let s:default_filetypes = {
       \ 'nyaos': [
       \   {
       \    'start': '\<lua_e\s\+\(["'']\)',
-      \    'end': '^\1', 'filetype': 'lua',
+      \    'end': '\1\@<!\1\1\@!', 'filetype': 'lua',
       \   }
       \ ],
       \ 'perl6': [
