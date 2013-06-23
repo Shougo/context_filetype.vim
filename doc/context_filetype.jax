@@ -115,7 +115,7 @@ g:context_filetype#filetypes			*g:context_filetype#filetypes*
 		              チした値になります。
 >
 		" Examples:
-		let g:context_filetype_filetypes = {
+		let g:context_filetype#filetypes = {
 		\ "perl6" : [
 		\   {
 		\     'filetype' : 'pir',
@@ -155,7 +155,7 @@ context_filetype#version()			*context_filetype#version()*
 						*context_filetype#default_filetypes()*
 context_filetype#default_filetypes()
 		デフォルトで設定されている |g:context_filetype#filetypes| の値
-		を返します。
+		を返す。
 
 context_filetype#get([{filetype}])		*context_filetype#get()*
 		カーソル位置のコンテキスト情報を下記のようなフォーマットで返
@@ -182,7 +182,7 @@ context_filetype#get_range([{filetype}])	*context_filetype#get_range()*
 <
 		コンテキストの判定には {filetype} が使用され、{filetype} が渡
 		されなければ 'filetype' の値が使用される。
-		ンテキストが見つからなかった場合は [[0,0], [0,0]] が返される。
+		コンテキストが見つからなかった場合は [[0,0], [0,0]] が返される。
 
 ==============================================================================
 変更履歴					*context_filetype-changelog*
