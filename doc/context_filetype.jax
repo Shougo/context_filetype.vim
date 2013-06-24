@@ -111,7 +111,7 @@ g:context_filetype#filetypes			*g:context_filetype#filetypes*
 		"start"    : コンテキストの開始パターン
 		"end"      : コンテキストの終了パターン
 		"filetype" : 判定を行う filetype
-		              "end" または "filetype" に \1 が設定されている場
+			      "end" または "filetype" に \1 が設定されている場
 			      合は "start" にマッチした値になります。
 >
 		" Examples:
@@ -142,11 +142,12 @@ g:context_filetype#filetypes			*g:context_filetype#filetypes*
 
 
 g:context_filetype#search_offset		*g:context_filetype#search_offset*
-		|searchpos| の使用時の {stopline} の閾値です。
-		カーソル位置からこの変数に設定されている行数の範囲のみを対象と
-		します。
-		動作が重く感じる場合はこの値を小さくして試して下さい。
+		コンテキストを判定する時にカーソル位置からこの変数に設定され
+		ている行数の範囲のみを対象として判定を行います。
+		バッファの行数が多くて動作が重く感じる場合はこの値を小さくし
+		て試してみて下さい。
 Default: >
+		" カーソル位置から前後 3000行の範囲で判定を行う
 		let g:context_filetype#search_offset = 3000
 <
 
@@ -156,8 +157,17 @@ Default: >
 
 context_filetype#version()			*context_filetype#version()*
 		バージョン情報を返す。
-		Note: このライブラリがインストールされているかどうかの判定に使
-		用出来ます。
+		Note: このライブラリがインストールされているかどうかの判定を
+		使用する場合に利用することもできます。
+Example: >
+	let has_context_filetype = 0
+	silent! let has_context_filetype = context_filetype#version()
+	if has_context_filetype
+		" context_filetype.vim が使用出来る場合の処理
+	else
+		" context_filetype.vim が使用出来ない場合の処理
+	endif
+<
 
 						*context_filetype#default_filetypes()*
 context_filetype#default_filetypes()
