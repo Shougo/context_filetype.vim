@@ -118,6 +118,16 @@ let s:default_filetypes = {
       \ 'html': [
       \   {
       \    'start':
+      \     '<script>',
+      \    'end': '</script>', 'filetype': 'javascript',
+      \   },
+      \   {
+      \    'start':
+      \     '<script\%( [^>]*\)charset="[^\"]*"\%( [^>]*\)\?>',
+      \    'end': '</script>', 'filetype': 'javascript',
+      \   },
+      \   {
+      \    'start':
       \     '<script\%( [^>]*\)\? type="text/javascript"\%( [^>]*\)\?>',
       \    'end': '</script>', 'filetype': 'javascript',
       \   },
