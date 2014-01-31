@@ -229,6 +229,16 @@ let s:default_filetypes = {
       \    'end' : '^\s*```$', 'filetype' : '\1',
       \   },
       \ ],
+      \ 'haml': [
+      \   {
+      \    'start' : '^\s*-',
+      \    'end' : '$', 'filetype' : 'ruby',
+      \   },
+      \   {
+      \    'start' : '^\s*\w*=',
+      \    'end' : '$', 'filetype' : 'ruby',
+      \   },
+      \ ],
 \}"}}}
 
 
