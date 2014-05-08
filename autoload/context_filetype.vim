@@ -238,6 +238,10 @@ let s:default_filetypes = {
       \    'start' : '^\s*\w*=',
       \    'end' : '$', 'filetype' : 'ruby',
       \   },
+      \   {
+      \    'start' : '^:javascript$',
+      \    'end' : '^$', 'filetype' : 'javascript',
+      \   },
       \ ],
 \}"}}}
 
