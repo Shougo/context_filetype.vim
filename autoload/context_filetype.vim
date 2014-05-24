@@ -240,7 +240,7 @@ let s:default_filetypes = {
       \   },
       \   {
       \    'start' : '^:javascript$',
-      \    'end' : '^$', 'filetype' : 'javascript',
+      \    'end' : '^\S', 'filetype' : 'javascript',
       \   },
       \ ],
 \}"}}}
