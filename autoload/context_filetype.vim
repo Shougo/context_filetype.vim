@@ -380,7 +380,7 @@ endfunction"}}}
 function! s:get_nest_impl(filetype, context_filetypes, prev_context) "{{{
   let context = s:get_context(a:filetype,
         \ a:context_filetypes, a:prev_context.range)
-  if context.range != s:null_range
+  if context.range != s:null_range && context.filetype !=# a:filetype
     return s:get_nest_impl(context.filetype, a:context_filetypes, context)
   else
     return a:prev_context
