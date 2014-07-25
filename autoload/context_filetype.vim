@@ -81,7 +81,7 @@ let s:default_filetypes = {
       \   {
       \    'start': '_*asm_*\s*\%(_*volatile_*\s*\)\?(',
       \    'end': ');', 'filetype': 'gas',
-      \   }
+      \   },
       \ ],
       \ 'cpp': [
       \   {
@@ -95,25 +95,25 @@ let s:default_filetypes = {
       \   {
       \    'start': '_*asm_*\s*\%(_*volatile_*\s*\)\?(',
       \    'end': ');', 'filetype': 'gas',
-      \   }
+      \   },
       \ ],
       \ 'd': [
       \   {
       \    'start': 'asm\s*\%(\n\s*\)\?{',
       \    'end': '}', 'filetype': 'masm',
-      \   }
+      \   },
       \ ],
       \ 'eruby': [
       \   {
       \    'start': '<%[=#]\?',
       \    'end': '%>', 'filetype': 'ruby',
-      \   }
+      \   },
       \ ],
       \ 'help': [
       \   {
       \    'start': '^>\|\s>$',
       \    'end': '^<\|^\S', 'filetype': 'vim',
-      \   }
+      \   },
       \ ],
       \ 'html': [
       \   {
@@ -139,13 +139,13 @@ let s:default_filetypes = {
       \   {
       \    'start': '<style\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>',
       \    'end': '</style>', 'filetype': 'css',
-      \   }
+      \   },
       \ ],
       \ 'int-nyaos': [
       \   {
       \    'start': '\<lua_e\s\+\(["'']\)',
       \    'end': '\1\@<!\1\1\@!', 'filetype': 'lua',
-      \   }
+      \   },
       \ ],
       \ 'lua': [
       \   {
@@ -155,19 +155,19 @@ let s:default_filetypes = {
       \   {
       \    'start': 'vim.eval\s*(\([''"]\)',
       \    'end': '\\\@<!\1\s*)', 'filetype': 'vim',
-      \   }
+      \   },
       \ ],
       \ 'nyaos': [
       \   {
       \    'start': '\<lua_e\s\+\(["'']\)',
       \    'end': '\1\@<!\1\1\@!', 'filetype': 'lua',
-      \   }
+      \   },
       \ ],
       \ 'perl6': [
       \   {
       \    'start': 'Q:PIR\s*{',
       \    'end': '}', 'filetype': 'pir',
-      \   }
+      \   },
       \ ],
       \ 'python': [
       \   {
@@ -177,7 +177,7 @@ let s:default_filetypes = {
       \   {
       \    'start': 'vim.eval\s*(\([''"]\)',
       \    'end': '\\\@<!\1\s*)', 'filetype': 'vim',
-      \   }
+      \   },
       \ ],
       \ 'vim': [
       \   {
@@ -195,7 +195,7 @@ let s:default_filetypes = {
       \   {
       \    'start': '^\s*lua ',
       \    'end': '\n\|\s\+|', 'filetype': 'lua',
-      \   }
+      \   },
       \ ],
       \ 'vimshell': [
       \   {
@@ -209,7 +209,7 @@ let s:default_filetypes = {
       \   {
       \    'start': ' vexe\s\+',
       \    'end': '\n', 'filetype': 'vim',
-      \   }
+      \   },
       \ ],
       \ 'xhtml': [
       \   {
@@ -225,7 +225,7 @@ let s:default_filetypes = {
       \   {
       \    'start': '<style\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>',
       \    'end': '</style>', 'filetype': 'css',
-      \   }
+      \   },
       \ ],
       \ 'markdown': [
       \   {
