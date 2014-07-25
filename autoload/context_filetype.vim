@@ -191,6 +191,10 @@ let s:default_filetypes = {
       \   {
       \    'start': '^\s*lua <<\s*\(\h\w*\)',
       \    'end': '^\1', 'filetype': 'lua',
+      \   },
+      \   {
+      \    'start': '^\s*lua ',
+      \    'end': '\n\|\s\+|', 'filetype': 'lua',
       \   }
       \ ],
       \ 'vimshell': [
