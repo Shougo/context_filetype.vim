@@ -242,6 +242,10 @@ let s:default_filetypes = {
       \    'start' : '^:javascript$',
       \    'end' : '^\S', 'filetype' : 'javascript',
       \   },
+      \   {
+      \    'start' : '^:css$',
+      \    'end' : '^\S', 'filetype' : 'css',
+      \   },
       \ ],
 \}"}}}
 
