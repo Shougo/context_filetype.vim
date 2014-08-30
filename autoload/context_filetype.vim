@@ -251,6 +251,23 @@ let s:default_filetypes = {
       \    'end' : '^\S', 'filetype' : 'css',
       \   },
       \ ],
+      \ 'jade': [
+      \   {
+      \    'start' : '^\(\s*\)script\.\s*$',
+      \    'end' : '^\%(\1\s\|\s*$\)\@!',
+      \    'filetype' : 'javascript',
+      \   },
+      \   {
+      \    'start' : '^\(\s*\):coffeescript\s*$',
+      \    'end' : '^\%(\1\s\|\s*$\)\@!',
+      \    'filetype' : 'coffee',
+      \   },
+      \   {
+      \    'start' : '^\(\s*\):\(\h\w*\)\s*$',
+      \    'end' : '^\%(\1\s\|\s*$\)\@!',
+      \    'filetype' : '\2',
+      \   },
+      \ ],
 \}"}}}
 
 
