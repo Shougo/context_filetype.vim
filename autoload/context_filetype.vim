@@ -290,6 +290,17 @@ function! s:file_range() "{{{
   return [[1, 1], [line('$'), len(getline('$'))+1]]
 endfunction"}}}
 
+function! s:replace_submatch(pattern, match_list) "{{{
+  let num_list = matchlist(a:pattern, '\\\zs\d\+\ze')
+  let pattern = a:pattern
+  for num in num_list
+    if num
+      let pattern = substitute(pattern, '\\'.num, a:match_list[num], 'g')
+    endif
+  endfor
+  return pattern
+endfunction "}}}
+
 
 let s:null_pos = [0, 0]
 let s:null_range = [[0, 0], [0, 0]]
@@ -306,9 +317,9 @@ function! s:search_range(start_pattern, end_pattern) "{{{
   let start[1] += 1
 
   let end_pattern = a:end_pattern
-  if end_pattern =~ '\\1'
+  if end_pattern =~ '\\\d\+'
     let match_list = matchlist(getline(start[0]), a:start_pattern)
-    let end_pattern = substitute(end_pattern, '\\1', '\=match_list[1]', 'g')
+    let end_pattern = s:replace_submatch(end_pattern, match_list)
   endif
 
   let end_forward = searchpos(end_pattern, 'ncW', stopline_forward)
@@ -368,14 +379,13 @@ function! s:get_context(filetype, context_filetypes, search_range) "{{{
           \  && s:is_in(a:search_range[0], a:search_range[1], range[0])
           \  && s:is_in(a:search_range[0], a:search_range[1], range[1])
       let context_filetype = context.filetype
-      if context.filetype =~ '\\1'
+      if context.filetype =~ '\\\d\+'
         let stopline_back = s:stopline_back()
         let line = getline(
               \ searchpos(context.start, 'nbW', stopline_back)[0]
               \ )
         let match_list = matchlist(line, context.start)
-        let context_filetype = substitute(context.filetype,
-              \ '\\1', '\=match_list[1]', 'g')
+        let context_filetype = s:replace_submatch(context.filetype, match_list)
       endif
       return { "filetype" : context_filetype, "range" : range }
     endif
