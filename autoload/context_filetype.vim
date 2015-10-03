@@ -150,11 +150,11 @@ let s:default_filetypes = {
       \ 'lua': [
       \   {
       \    'start': 'vim.command\s*(\([''"]\)',
-      \    'end': '\\\@<!\1\s*)', 'filetype': 'vim',
+      \    'end': '\\\@<!\1', 'filetype': 'vim',
       \   },
       \   {
       \    'start': 'vim.eval\s*(\([''"]\)',
-      \    'end': '\\\@<!\1\s*)', 'filetype': 'vim',
+      \    'end': '\\\@<!\1', 'filetype': 'vim',
       \   },
       \ ],
       \ 'nyaos': [
@@ -172,11 +172,11 @@ let s:default_filetypes = {
       \ 'python': [
       \   {
       \    'start': 'vim.command\s*(\([''"]\)',
-      \    'end': '\\\@<!\1\s*)', 'filetype': 'vim',
+      \    'end': '\\\@<!\1', 'filetype': 'vim',
       \   },
       \   {
       \    'start': 'vim.eval\s*(\([''"]\)',
-      \    'end': '\\\@<!\1\s*)', 'filetype': 'vim',
+      \    'end': '\\\@<!\1', 'filetype': 'vim',
       \   },
       \ ],
       \ 'vim': [
