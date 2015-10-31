@@ -145,6 +145,34 @@ g:context_filetype#filetypes			*g:context_filetype#filetypes*
 		\}
 <
 
+					*g:context_filetype#same_filetypes*
+g:context_filetype#same_filetypes
+		各 same filetype を判定する為の辞書です。
+		各 filetype に対してカンマ区切りの文字列で設定する事ができま
+		す。
+>
+		if !exists('g:context_filetype#same_filetypes')
+		  let g:context_filetype#same_filetypes = {}
+		endif
+		" In c buffers, completes from cpp and d buffers.
+		let g:context_filetype#same_filetypes.c = 'cpp,d'
+		" In cpp buffers, completes from c buffers.
+		let g:context_filetype#same_filetypes.cpp = 'c'
+		" In gitconfig buffers, completes from all buffers.
+		let g:context_filetype#same_filetypes.gitconfig = '_'
+		" In default, completes from all buffers.
+		let g:context_filetype#same_filetypes._ = '_'
+<
+
+				*g:context_filetype#ignore_composite_filetypes*
+g:context_filetype#ignore_composite_filetypes
+		複合 filetype を他の filetype に変換する為の辞書です。
+>
+		" Examples:
+		let g:context_filetype#ignore_composite_filetypes = {
+			\ 'ruby.spec' : 'ruby'
+			\ }
+<
 
 g:context_filetype#search_offset		*g:context_filetype#search_offset*
 		コンテキストを判定する時にカーソル位置からこの変数に設定され
@@ -197,6 +225,13 @@ context_filetype#get_filetype([{filetype}])	*context_filetype#get_filetype()*
 		されなければ 'filetype' の値が使用される。
 		コンテキストが見つからなかった場合は {filetype} が返される。
 
+					*context_filetype#get_filetypes()*
+context_filetype#get_filetypes([{filetype}])
+		カーソル位置のコンテキストの filetype をリスト形式で返す。
+		この filetype には複合 filetype と same filetype が含まれる。
+		コンテキストの判定には {filetype} が使用され、{filetype} が渡
+		されなければ 'filetype' の値が使用される。
+
 context_filetype#get_range([{filetype}])	*context_filetype#get_range()*
 		カーソル位置のコンテキストの範囲を [[{start}], [{end}]] で返す。
 >
@@ -205,13 +240,6 @@ context_filetype#get_range([{filetype}])	*context_filetype#get_range()*
 		コンテキストの判定には {filetype} が使用され、{filetype} が渡
 		されなければ 'filetype' の値が使用される。
 		コンテキストが見つからなかった場合は [[0,0], [0,0]] が返される。
-
-==============================================================================
-変更履歴					*context_filetype-changelog*
-
-2013-05-19
-- Initial version.
-- Added documentation.
 
 ==============================================================================
 vim:tw=78:ts=8:ft=help:norl:noet:fen:noet:

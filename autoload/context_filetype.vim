@@ -31,6 +31,12 @@ set cpo&vim
 let g:context_filetype#filetypes = get(g:,
       \ 'context_filetype#filetypes', {})
 
+let g:context_filetype#ignore_composite_filetypes = get(g:,
+      \ 'context_filetype#ignore_composite_filetypes', {})
+
+let g:context_filetype#same_filetypes = get(g:,
+      \ 'context_filetype#same_filetypes', {})
+
 let g:context_filetype#search_offset = get(g:,
       \ 'context_filetype#search_offset', 3000)
 
@@ -53,6 +59,31 @@ endfunction"}}}
 function! context_filetype#get_filetype(...) "{{{
   let base_filetype = get(a:, 1, &filetype)
   return context_filetype#get(base_filetype).filetype
+endfunction"}}}
+
+function! context_filetype#get_filetypes(...) "{{{
+  let filetype = call('context_filetype#get_filetype', a:000)
+
+  let filetypes = [filetype]
+  if filetype =~ '\.'
+    if has_key(g:context_filetype#ignore_composite_filetypes, filetype)
+      let filetypes =
+            \ [g:context_filetype#ignore_composite_filetypes[filetype]]
+    else
+      " Set composite filetype.
+      let filetypes += split(filetype, '\.')
+    endif
+  endif
+
+  for ft in copy(filetypes)
+    let filetypes += s:get_same_filetypes(ft)
+  endfor
+
+  if len(filetypes) > 1
+    let filetypes = s:uniq(filetypes)
+  endif
+
+  return filetypes
 endfunction"}}}
 
 
@@ -278,6 +309,65 @@ function! s:get_filetypes(filetypes) "{{{
         \)
 endfunction"}}}
 
+" s:default_same_filetypes {{{
+let s:default_same_filetypes = {
+      \ 'c':  'cpp',
+      \ 'cpp': 'c',
+      \ 'erb': 'ruby,html,xhtml',
+      \ 'html': 'xhtml,css,stylus,less',
+      \ 'xml': 'xhtml',
+      \ 'xhtml': 'html,xml,css,stylus,less',
+      \ 'css': 'scss',
+      \ 'scss': 'css',
+      \ 'stylus': 'css',
+      \ 'less': 'css',
+      \ 'help': 'vim',
+      \ 'tex': 'bib,plaintex',
+      \ 'plaintex': 'bib,tex',
+      \ 'lingr-say': 'lingr-messages,lingr-members',
+      \ 'J6uil_say': 'J6uil',
+      \ 'vimconsole': 'vim',
+      \
+      \ 'int-irb': 'ruby',
+      \ 'int-ghci': 'haskell',
+      \ 'int-hugs': 'haskell',
+      \ 'int-python': 'python',
+      \ 'int-python3': 'python',
+      \ 'int-ipython': 'python',
+      \ 'int-ipython3': 'python',
+      \ 'int-gosh': 'scheme',
+      \ 'int-clisp': 'lisp',
+      \ 'int-erl': 'erlang',
+      \ 'int-zsh': 'zsh',
+      \ 'int-bash': 'bash',
+      \ 'int-sh': 'sh',
+      \ 'int-cmdproxy': 'dosbatch',
+      \ 'int-powershell': 'powershell',
+      \ 'int-perlsh': 'perl',
+      \ 'int-perl6': 'perl6',
+      \ 'int-ocaml': 'ocaml',
+      \ 'int-clj': 'clojure',
+      \ 'int-lein': 'clojure',
+      \ 'int-sml': 'sml',
+      \ 'int-smlsharp': 'sml',
+      \ 'int-js': 'javascript',
+      \ 'int-kjs': 'javascript',
+      \ 'int-rhino': 'javascript',
+      \ 'int-coffee': 'coffee',
+      \ 'int-gdb': 'gdb',
+      \ 'int-scala': 'scala',
+      \ 'int-nyaos': 'nyaos',
+      \ 'int-php': 'php',
+\}"}}}
+
+
+function! s:get_same_filetypes(filetype) "{{{
+  let same_filetypes = extend(copy(s:default_same_filetypes),
+        \ g:context_filetype#same_filetypes)
+  return split(get(same_filetypes, a:filetype,
+          \ get(same_filetypes, '_', '')), ',')
+endfunction"}}}
+
 
 function! s:stopline_forward() "{{{
   let stopline_forward = line('.') + g:context_filetype#search_offset
@@ -428,6 +518,16 @@ function! s:get_nest(filetype, context_filetypes) "{{{
   return s:get_nest_impl(context.filetype, a:context_filetypes, context)
 endfunction"}}}
 
+function! s:uniq(list) "{{{
+  let dict = {}
+  for item in a:list
+    if !has_key(dict, item)
+      let dict[item] = item
+    endif
+  endfor
+
+  return values(dict)
+endfunction"}}}
 
 
 let &cpo = s:save_cpo
