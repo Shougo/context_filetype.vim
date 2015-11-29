@@ -149,16 +149,6 @@ let s:default_filetypes = {
       \ 'html': [
       \   {
       \    'start':
-      \     '<script>',
-      \    'end': '</script>', 'filetype': 'javascript',
-      \   },
-      \   {
-      \    'start':
-      \     '<script\%( [^>]*\)charset="[^\"]*"\%( [^>]*\)\?>',
-      \    'end': '</script>', 'filetype': 'javascript',
-      \   },
-      \   {
-      \    'start':
       \     '<script\%( [^>]*\)\? type="text/javascript"\%( [^>]*\)\?>',
       \    'end': '</script>', 'filetype': 'javascript',
       \   },
@@ -170,6 +160,11 @@ let s:default_filetypes = {
       \   {
       \    'start': '<style\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>',
       \    'end': '</style>', 'filetype': 'css',
+      \   },
+      \   {
+      \    'start':
+      \     '<script\%( [^>]*\)\?>',
+      \    'end': '</script>', 'filetype': 'javascript',
       \   },
       \ ],
       \ 'int-nyaos': [
