@@ -204,6 +204,10 @@ let s:default_filetypes = {
       \    'start': 'vim.eval\s*(\([''"]\)',
       \    'end': '\\\@<!\1', 'filetype': 'vim',
       \   },
+      \   {
+      \    'start': 'vim.call\s*(\([''"]\)',
+      \    'end': '\\\@<!\1', 'filetype': 'vim',
+      \   },
       \ ],
       \ 'vim': [
       \   {
