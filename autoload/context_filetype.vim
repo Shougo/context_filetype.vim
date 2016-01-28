@@ -310,7 +310,6 @@ endfunction"}}}
 
 " s:default_same_filetypes {{{
 let s:default_same_filetypes = {
-      \ 'c':  'cpp',
       \ 'cpp': 'c',
       \ 'erb': 'ruby,html,xhtml',
       \ 'html': 'xhtml,css,stylus,less',
