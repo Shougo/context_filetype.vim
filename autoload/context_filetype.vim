@@ -519,7 +519,7 @@ endfunction"}}}
 function! s:uniq(list) "{{{
   let dict = {}
   for item in a:list
-    if !has_key(dict, item)
+    if item != '' && !has_key(dict, item)
       let dict[item] = item
     endif
   endfor
