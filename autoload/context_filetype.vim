@@ -298,6 +298,13 @@ let s:default_filetypes = {
       \    'filetype' : '\2',
       \   },
       \ ],
+      \ 'toml': [
+      \   {
+      \    'start': '\<hook_\%(add\|source\|post_source\)\s*=\s*'.
+      \             '\('."'''".'\|"""\)',
+      \    'end': '\1', 'filetype': 'vim',
+      \   },
+      \ ],
 \}"}}}
 
 
