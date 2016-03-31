@@ -67,6 +67,7 @@ g:context_filetype#filetypes			*g:context_filetype#filetypes*
 b:context_filetype_filetypes			*b:context_filetype_filetypes*
 		It is the buffer variable version of
 		|g:context_filetype#filetypes|.
+		If you set it, |g:context_filetype#filetypes| is ignored.
 
 					*g:context_filetype#same_filetypes*
 g:context_filetype#same_filetypes
