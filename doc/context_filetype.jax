@@ -144,6 +144,9 @@ g:context_filetype#filetypes			*g:context_filetype#filetypes*
 		\ ],
 		\}
 <
+b:context_filetype_filetypes			*b:context_filetype_filetypes*
+		バッファ変数版の |g:context_filetype#filetypes| です。
+
 
 					*g:context_filetype#same_filetypes*
 g:context_filetype#same_filetypes

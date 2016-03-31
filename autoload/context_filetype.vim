@@ -47,7 +47,8 @@ endfunction"}}}
 
 function! context_filetype#get(...) "{{{
   let base_filetype = get(a:, 1, &filetype)
-  let filetypes = s:get_filetypes({})
+  let filetypes = s:get_filetypes(
+        \ get(b:, 'context_filetype_filetypes', {}))
   let context = s:get_nest(base_filetype, filetypes)
   if context.range == s:null_range
     let context.filetype = base_filetype

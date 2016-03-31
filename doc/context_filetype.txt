@@ -64,6 +64,10 @@ g:context_filetype#filetypes			*g:context_filetype#filetypes*
 		Because it is complicated, refer to s:initialize() in
 		autoload/context_filetype.vim for the initial value.
 
+b:context_filetype_filetypes			*b:context_filetype_filetypes*
+		It is the buffer variable version of
+		|g:context_filetype#filetypes|.
+
 					*g:context_filetype#same_filetypes*
 g:context_filetype#same_filetypes
 		It is a dictionary to connect file type mutually.  It is
