@@ -324,6 +324,7 @@ let s:default_same_filetypes = {
       \ 'html': 'xhtml,css,stylus,less',
       \ 'xml': 'xhtml',
       \ 'xhtml': 'html,xml,css,stylus,less',
+      \ 'htmldjango': 'html',
       \ 'css': 'scss',
       \ 'scss': 'css',
       \ 'stylus': 'css',
