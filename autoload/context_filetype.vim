@@ -228,6 +228,12 @@ let s:default_filetypes = {
       \    'end': '\n\|\s\+|', 'filetype': 'lua',
       \   },
       \ ],
+      \ 'vimperator': [
+      \   {
+      \    'start': '^\s*\%(javascript\|js\)\s\+<<\s*\(\h\w*\)',
+      \    'end': '^\1', 'filetype': 'javascript',
+      \   }
+      \ ],
       \ 'vimshell': [
       \   {
       \    'start': 'vexe \([''"]\)',
