@@ -87,6 +87,21 @@ function! context_filetype#get_filetypes(...) "{{{
   return filetypes
 endfunction"}}}
 
+function! context_filetype#get_same_filetypes(...) "{{{
+  let filetype = call('context_filetype#get_filetype', a:000)
+
+  let filetypes = []
+  for ft in context_filetype#get_filetypes(filetype)
+    let filetypes += s:get_same_filetypes(ft)
+  endfor
+
+  if len(filetypes) > 1
+    let filetypes = s:uniq(filetypes)
+  endif
+
+  return filetypes
+endfunction"}}}
+
 
 function! context_filetype#get_range(...) "{{{
   let base_filetype = get(a:, 1, &filetype)
