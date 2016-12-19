@@ -227,6 +227,10 @@ let s:default_filetypes = {
       \ ],
       \ 'vim': [
       \   {
+      \    'start': '^\s*pe\%[rl\] <<\s*\(\h\w*\)',
+      \    'end': '^\1', 'filetype': 'perl',
+      \   },
+      \   {
       \    'start': '^\s*py\%[thon\]3\? <<\s*\(\h\w*\)',
       \    'end': '^\1', 'filetype': 'python',
       \   },
