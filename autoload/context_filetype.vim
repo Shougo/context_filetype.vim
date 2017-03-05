@@ -182,6 +182,11 @@ let s:default_filetypes = {
       \     '<script\%( [^>]*\)\?>',
       \    'end': '</script>', 'filetype': 'javascript',
       \   },
+      \   {
+      \    'start':
+      \     '<style\%( [^>]*\)\?>',
+      \    'end': '</style>', 'filetype': 'css',
+      \   },
       \ ],
       \ 'int-nyaos': [
       \   {
