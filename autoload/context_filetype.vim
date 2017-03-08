@@ -174,10 +174,6 @@ let s:default_filetypes = {
       \    'end': '</script>', 'filetype': 'coffee',
       \   },
       \   {
-      \    'start': '<style\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>',
-      \    'end': '</style>', 'filetype': 'css',
-      \   },
-      \   {
       \    'start':
       \     '<script\%( [^>]*\)\?>',
       \    'end': '</script>', 'filetype': 'javascript',
@@ -186,6 +182,11 @@ let s:default_filetypes = {
       \    'start':
       \     '<style\%( [^>]*\)\?>',
       \    'end': '</style>', 'filetype': 'css',
+      \   },
+      \   {
+      \    'start':
+      \     '<[^>]\+ style="',
+      \    'end': '"', 'filetype': 'css',
       \   },
       \ ],
       \ 'int-nyaos': [
