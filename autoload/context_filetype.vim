@@ -231,6 +231,16 @@ let s:default_filetypes = {
       \    'end': '\\\@<!\1', 'filetype': 'vim',
       \   },
       \ ],
+      \ 'php': [
+      \   {
+      \    'start': '<?php\[\s\n\]\+',
+      \    'end': '\[\s\n\]\+?>', 'filetype': 'php',
+      \   },
+      \   {
+      \    'start': '\<?\[\s\n\]\+',
+      \    'end': '\[\s\n\]\+?>', 'filetype': 'php',
+      \   }
+      \ ],
       \ 'vim': [
       \   {
       \    'start': '^\s*pe\%[rl\] <<\s*\(\h\w*\)',
