@@ -25,9 +25,6 @@
 "=============================================================================
 scriptencoding utf-8
 
-let s:save_cpo = &cpo
-set cpo&vim
-
 let g:context_filetype#filetypes = get(g:,
       \ 'context_filetype#filetypes', {})
 
@@ -568,8 +565,5 @@ function! s:uniq(list) "{{{
   return values(dict)
 endfunction"}}}
 
-
-let &cpo = s:save_cpo
-unlet s:save_cpo
 
 " vim: set foldmethod=marker tabstop=2 expandtab:
