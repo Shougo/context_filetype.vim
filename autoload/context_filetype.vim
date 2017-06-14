@@ -335,6 +335,12 @@ let s:default_filetypes = {
       \    'end': '\1', 'filetype': 'vim',
       \   },
       \ ],
+      \ 'go': [
+      \   {
+      \    'start': '^\s*/\*$',
+      \    'end': '^\s*\*/\n\s*import\s\+"C"$', 'filetype': 'c',
+      \   },
+      \ ],
 \}"}}}
 
 
