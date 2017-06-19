@@ -156,7 +156,7 @@ let s:default_filetypes = {
       \ 'help': [
       \   {
       \    'start': '^>\|\s>$',
-      \    'end': '^<\|^\S', 'filetype': 'vim',
+      \    'end': '^<\|^\S\|^$', 'filetype': 'vim',
       \   },
       \ ],
       \ 'html': [
