@@ -16,7 +16,7 @@ let g:context_filetype#same_filetypes = get(g:,
       \ 'context_filetype#same_filetypes', {})
 
 let g:context_filetype#search_offset = get(g:,
-      \ 'context_filetype#search_offset', 3000)
+      \ 'context_filetype#search_offset', 200)
 
 function! context_filetype#version() "{{{
   return str2nr(printf('%02d%02d', 1, 0))
