@@ -497,7 +497,7 @@ function! s:get_context(filetype, context_filetypes, search_range) "{{{
   for context in context_filetypes
     let range = s:search_range(context.start, context.end)
 
-    " insert 時にカーソル座標がずれるのでそれの対応
+    " Set cursor position
     let start = range[0]
     let end   = [range[1][0], (mode() ==# 'i') ? range[1][1]+1 : range[1][1]]
 
