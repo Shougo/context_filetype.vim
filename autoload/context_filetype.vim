@@ -344,7 +344,6 @@ let s:default_same_filetypes = {
       \ 'scss': 'css',
       \ 'stylus': 'css',
       \ 'less': 'css',
-      \ 'help': 'vim',
       \ 'tex': 'bib,plaintex',
       \ 'plaintex': 'bib,tex',
       \ 'lingr-say': 'lingr-messages,lingr-members',
