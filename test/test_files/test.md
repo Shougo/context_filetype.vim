@@ -70,5 +70,9 @@ EOF
 
     ```
 
+```text
+`text`本日は晴天なり`text`
+```
+
 `markdown`
 
