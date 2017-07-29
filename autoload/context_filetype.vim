@@ -469,7 +469,7 @@ function! s:search_range(start_pattern, end_pattern) "{{{
 
   if end_forward[1] <= 1
     let end_forward[0] -= 1
-    let len = strdisplaywidth(getline(end_forward[0]))
+    let len = len(getline(end_forward[0]))
     let len = len ? len : 1
     let end_forward[1] = len
   endif
