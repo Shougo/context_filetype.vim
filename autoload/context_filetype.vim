@@ -318,8 +318,8 @@ let s:default_filetypes = {
       \ ],
       \ 'go': [
       \   {
-      \    'start': '^\s*/\*$',
-      \    'end': '^\s*\*/\n\s*import\s\+"C"$', 'filetype': 'c',
+      \    'start': '^\s*\/\*\s*$',
+      \    'end': '^\s*\*\/\s*\_.\s*import\s\+"C"$', 'filetype': 'c',
       \   },
       \ ],
 \}"}}}
