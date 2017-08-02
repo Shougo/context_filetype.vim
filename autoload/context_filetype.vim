@@ -318,8 +318,8 @@ let s:default_filetypes = {
       \ ],
       \ 'go': [
       \   {
-      \    'start': '^\s*/\*$',
-      \    'end': '^\s*\*/\n\s*import\s\+"C"$', 'filetype': 'c',
+      \    'start': '^\s*\/\*\s*$',
+      \    'end': '^\s*\*\/\s*\_.\s*import\s\+"C"$', 'filetype': 'c',
       \   },
       \ ],
 \}"}}}
@@ -452,11 +452,15 @@ function! s:search_range(start_pattern, end_pattern) "{{{
   endif
 
   let end_forward = searchpos(end_pattern, 'ncW', stopline_forward)
+  let original_end_forward = end_forward
   if end_forward == s:null_pos
     let end_forward = [line('$'), len(getline('$'))+1]
   endi
 
   let end_backward = searchpos(end_pattern, 'bnW', stopline_back)
+  if original_end_forward == s:null_pos && end_backward == s:null_pos
+    return s:null_range
+  endif
   if s:pos_less_equal(start, end_backward)
     return s:null_range
   endif
