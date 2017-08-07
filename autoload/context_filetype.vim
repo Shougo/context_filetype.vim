@@ -167,6 +167,28 @@ let s:default_filetypes = {
       \    'end': '"', 'filetype': 'css',
       \   },
       \ ],
+      \ 'vue': [
+      \   {
+      \    'start':
+      \     '<template\%( [^>]*\)\?>',
+      \    'end': '</template>', 'filetype': 'html',
+      \   },
+      \   {
+      \    'start':
+      \     '<script\%( [^>]*\)\? \%(ts\|lang="\%(ts\|typescript\)"\)\%( [^>]*\)\?>',
+      \    'end': '</script>', 'filetype': 'typescript',
+      \   },
+      \   {
+      \    'start':
+      \     '<script\%( [^>]*\)\?>',
+      \    'end': '</script>', 'filetype': 'javascript',
+      \   },
+      \   {
+      \    'start':
+      \     '<style\%( [^>]*\)\?>',
+      \    'end': '</style>', 'filetype': 'css',
+      \   },
+      \ ],
       \ 'int-nyaos': [
       \   {
       \    'start': '\<lua_e\s\+\(["'']\)',
