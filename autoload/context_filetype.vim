@@ -170,6 +170,11 @@ let s:default_filetypes = {
       \ 'vue': [
       \   {
       \    'start':
+      \     '<template\%( [^>]*\)\? lang="pug"\%( [^>]*\)\?>',
+      \    'end': '</template>', 'filetype': 'pug',
+      \   },
+      \   {
+      \    'start':
       \     '<template\%( [^>]*\)\?>',
       \    'end': '</template>', 'filetype': 'html',
       \   },
