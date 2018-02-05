@@ -170,8 +170,8 @@ let s:default_filetypes = {
       \ 'vue': [
       \   {
       \    'start':
-      \     '<template\%( [^>]*\)\? lang="pug"\%( [^>]*\)\?>',
-      \    'end': '</template>', 'filetype': 'pug',
+      \     '<template\%( [^>]*\)\? \%(lang="\%(\(\h\w*\)\)"\)\%( [^>]*\)\?>',
+      \    'end': '</template>', 'filetype': '\1',
       \   },
       \   {
       \    'start':
@@ -185,8 +185,18 @@ let s:default_filetypes = {
       \   },
       \   {
       \    'start':
+      \     '<script\%( [^>]*\)\? \%(lang="\%(\(\h\w*\)\)"\)\%( [^>]*\)\?>',
+      \    'end': '</script>', 'filetype': '\1',
+      \   },
+      \   {
+      \    'start':
       \     '<script\%( [^>]*\)\?>',
       \    'end': '</script>', 'filetype': 'javascript',
+      \   },
+      \   {
+      \    'start':
+      \     '<style\%( [^>]*\)\? \%(lang="\%(\(\h\w*\)\)"\)\%( [^>]*\)\?>',
+      \    'end': '</style>', 'filetype': '\1',
       \   },
       \   {
       \    'start':
