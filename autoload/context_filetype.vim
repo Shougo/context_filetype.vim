@@ -359,6 +359,16 @@ let s:default_filetypes = {
       \    'end': '$', 'filetype': 'c',
       \   },
       \ ],
+      \ 'asciidoc': [
+      \   {
+      \    'start' : '^\[source\%(%[^,]*\)\?,\(\h\w*\)\(,.*\)\?\]\s*\n----\s*\n',
+      \    'end' : '^----\s*$', 'filetype' : '\1',
+      \   },
+      \   {
+      \    'start' : '^\[source\%(%[^,]*\)\?,\(\h\w*\)\(,.*\)\?\]\s*\n',
+      \    'end' : '^$', 'filetype' : '\1',
+      \   },
+      \ ],
 \}
 
 
