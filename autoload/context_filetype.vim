@@ -484,7 +484,8 @@ function! s:search_range(start_pattern, end_pattern)
 
   let end_pattern = a:end_pattern
   if end_pattern =~ '\\\d\+'
-    let match_list = matchlist(getline(start[0]), a:start_pattern)
+    let lines = getline(start[0], line("."))
+    let match_list = matchlist(join(lines, "\n"), a:start_pattern)
     let end_pattern = s:replace_submatch(end_pattern, match_list)
   endif
 
@@ -547,10 +548,11 @@ function! s:get_context(filetype, context_filetypes, search_range)
       let context_filetype = context.filetype
       if context.filetype =~ '\\\d\+'
         let stopline_back = s:stopline_back()
-        let line = getline(
-              \ searchpos(context.start, 'nbW', stopline_back)[0]
+        let lines = getline(
+              \ searchpos(context.start, 'nbW', stopline_back)[0],
+              \ line(".")
               \ )
-        let match_list = matchlist(line, context.start)
+        let match_list = matchlist(join(lines, "\n"), context.start)
         let context_filetype = s:replace_submatch(context.filetype, match_list)
       endif
       return { "filetype" : context_filetype, "range" : range }
