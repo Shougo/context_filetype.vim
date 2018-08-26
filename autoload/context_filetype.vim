@@ -383,9 +383,9 @@ endfunction
 let s:default_same_filetypes = {
       \ 'cpp': 'c',
       \ 'erb': 'ruby,html,xhtml',
-      \ 'html': 'xhtml,css,stylus,less',
+      \ 'html': 'xhtml',
       \ 'xml': 'xhtml',
-      \ 'xhtml': 'html,xml,css,stylus,less',
+      \ 'xhtml': 'html,xml',
       \ 'htmldjango': 'html',
       \ 'css': 'scss',
       \ 'scss': 'css',
