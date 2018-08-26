@@ -163,8 +163,8 @@ let s:default_filetypes = {
       \   },
       \   {
       \    'start':
-      \     '<[^>]\+ style="',
-      \    'end': '"', 'filetype': 'css',
+      \     '<[^>]\+ style=(\([''"]\)',
+      \    'end': '\1', 'filetype': 'css',
       \   },
       \ ],
       \ 'vue': [
