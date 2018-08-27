@@ -163,7 +163,7 @@ let s:default_filetypes = {
       \   },
       \   {
       \    'start':
-      \     '<[^>]\+ style=(\([''"]\)',
+      \     '<[^>]\+ style=\([''"]\)',
       \    'end': '\1', 'filetype': 'css',
       \   },
       \ ],
@@ -475,7 +475,7 @@ function! s:replace_submatch(pattern, match_list)
     endif
   endfor
   return pattern
-endfunction 
+endfunction
 
 
 let s:null_pos = [0, 0]
@@ -486,7 +486,18 @@ function! s:search_range(start_pattern, end_pattern)
   let stopline_forward = s:stopline_forward()
   let stopline_back    = s:stopline_back()
 
-  let start = searchpos(a:start_pattern, 'bnceW', stopline_back)
+  let cur_text =
+        \ (mode() ==# 'i' ? (col('.')-1) : col('.')) >= len(getline('.')) ?
+        \      getline('.') :
+        \      matchstr(getline('.'),
+        \         '^.*\%' . (mode() ==# 'i' ? col('.') : col('.') - 1)
+        \         . 'c' . (mode() ==# 'i' ? '' : '.'))
+  let curline_pattern = a:start_pattern . '.\{-}$'
+  if cur_text =~# curline_pattern
+    let start = [line('.'), match(cur_text, curline_pattern)]
+  else
+    let start = searchpos(a:start_pattern, 'bnceW', stopline_back)
+  endif
   if start == s:null_pos
     return s:null_range
   endif
