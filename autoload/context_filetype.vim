@@ -492,9 +492,9 @@ function! s:search_range(start_pattern, end_pattern)
         \      matchstr(getline('.'),
         \         '^.*\%' . (mode() ==# 'i' ? col('.') : col('.') - 1)
         \         . 'c' . (mode() ==# 'i' ? '' : '.'))
-  let curline_pattern = a:start_pattern . '.\{-}$'
+  let curline_pattern = a:start_pattern . '\ze.\{-}$'
   if cur_text =~# curline_pattern
-    let start = [line('.'), match(cur_text, curline_pattern)]
+    let start = [line('.'), matchend(cur_text, curline_pattern)]
   else
     let start = searchpos(a:start_pattern, 'bnceW', stopline_back)
   endif
@@ -521,7 +521,7 @@ function! s:search_range(start_pattern, end_pattern)
   endif
   let end_forward[1] -= 1
 
-  if start[1] >= strdisplaywidth(getline(start[0]))
+  if mode() !=# 'i' && start[1] >= strdisplaywidth(getline(start[0]))
     let start[0] += 1
     let start[1] = 1
   endif
