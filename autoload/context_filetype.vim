@@ -203,6 +203,16 @@ let s:default_filetypes = {
       \     '<style\%( [^>]*\)\?>',
       \    'end': '</style>', 'filetype': 'css',
       \   },
+      \   {
+      \    'start':
+      \     '<\(\h\w*\)>',
+      \    'end': '</\1>', 'filetype': 'vue-\1',
+      \   },
+      \   {
+      \    'start':
+      \     '<\(\h\w*\) \%(lang="\%(\(\h\w*\)\)"\)\%( [^>]*\)\?>',
+      \    'end': '</\1>', 'filetype': '\2',
+      \   },
       \ ],
       \ 'int-nyaos': [
       \   {
