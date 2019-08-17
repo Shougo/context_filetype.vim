@@ -379,6 +379,12 @@ let s:default_filetypes = {
       \    'end' : '^$', 'filetype' : '\1',
       \   },
       \ ],
+      \ 'review': [
+      \   {
+      \    'start': '^//list\[[^]]\+\]\[[^]]\+\]\[\([^]]\+\)\]{',
+      \    'end': '^//}', 'filetype' : '\1',
+      \   },
+      \ ],
 \}
 
 
