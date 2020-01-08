@@ -15,7 +15,8 @@ Changelog		|context_filetype-changelog|
 ==============================================================================
 INTRODUCTION					*context_filetype-introduction*
 
-Provides functions to find fenced code blocks and their filetype.
+*context_filetype* provides functions to find fenced code blocks and their
+filetype.
 For example Javascript blocks inside of HTML.
 The fenced code is detected by predefined regular expressions.
 
