@@ -28,7 +28,7 @@ function! context_filetype#get(...) abort
   let filetypes = exists('b:context_filetype_filetypes') ?
         \ b:context_filetype_filetypes : s:get_filetypes({})
   let context = s:get_nest(base_filetype, filetypes)
-  if context.range == s:null_range
+  if context.range == s:null_range && !has_key(context, 'synname')
     let context.filetype = base_filetype
   endif
   return context
@@ -385,6 +385,26 @@ let s:default_filetypes = {
       \    'end': '^//}', 'filetype' : '\1',
       \   },
       \ ],
+      \ 'javascript': [
+      \   {
+      \    'synname_pattern': '^jsx',
+      \    'filetype' : 'jsx',
+      \   },
+      \   {
+      \    'start': '^\s*{/\*',
+      \    'end': '\*/}', 'filetype' : 'jsx',
+      \   },
+      \ ],
+      \ 'typescript': [
+      \   {
+      \    'synname_pattern': '^jsx',
+      \    'filetype' : 'tsx',
+      \   },
+      \   {
+      \    'start': '^\s*{/\*',
+      \    'end': '\*/}', 'filetype' : 'tsx',
+      \   },
+      \ ],
 \}
 
 
@@ -569,6 +589,16 @@ function! s:get_context(filetype, context_filetypes, search_range) abort
   let pos = [line('.'), col('.')]
 
   for context in context_filetypes
+    if has_key(context, 'synname_pattern')
+      for id in synstack(line('.'), col('.'))
+        let synname = synIDattr(id, 'name')
+        if synname =~# context.synname_pattern
+          return {'filetype' : context.filetype, 'range': s:null_range, 'synname': synname}
+        endif
+      endfor
+      continue
+    endif
+
     let range = s:search_range(context.start, context.end)
 
     " Set cursor position
