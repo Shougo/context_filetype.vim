@@ -87,7 +87,7 @@ endfunction
 
 
 function! context_filetype#default_filetypes() abort
-  return copy(s:default_filetypes)
+  return deepcopy(s:default_filetypes)
 endfunction
 
 function! context_filetype#filetypes() abort
