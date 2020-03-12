@@ -25,8 +25,7 @@ endfunction
 
 function! context_filetype#get(...) abort
   let base_filetype = get(a:, 1, &filetype)
-  let filetypes = exists('b:context_filetype_filetypes') ?
-        \ b:context_filetype_filetypes : s:get_filetypes({})
+  let filetypes = context_filetype#filetypes()
   let context = s:get_nest(base_filetype, filetypes)
   if context.range == s:null_range && !has_key(context, 'synname')
     let context.filetype = base_filetype
@@ -89,6 +88,13 @@ endfunction
 
 function! context_filetype#default_filetypes() abort
   return copy(s:default_filetypes)
+endfunction
+
+function! context_filetype#filetypes() abort
+  if exists('b:context_filetype_filetypes')
+    return deepcopy(b:context_filetype_filetypes)
+  endif
+  return extend(deepcopy(s:default_filetypes), deepcopy(g:context_filetype#filetypes))
 endfunction
 
 
@@ -407,13 +413,6 @@ let s:default_filetypes = {
       \ ],
 \}
 
-
-function! s:get_filetypes(filetypes) abort
-  return extend(extend(
-        \ copy(s:default_filetypes), g:context_filetype#filetypes),
-        \ a:filetypes
-        \)
-endfunction
 
 " s:default_same_filetypes {{{
 let s:default_same_filetypes = {
