@@ -18,29 +18,28 @@ let g:context_filetype#same_filetypes = get(g:,
 let g:context_filetype#search_offset = get(g:,
       \ 'context_filetype#search_offset', 200)
 
-function! context_filetype#version()
+function! context_filetype#version() abort
   return str2nr(printf('%02d%02d', 1, 0))
 endfunction
 
 
-function! context_filetype#get(...)
+function! context_filetype#get(...) abort
   let base_filetype = get(a:, 1, &filetype)
-  let filetypes = exists('b:context_filetype_filetypes') ?
-        \ b:context_filetype_filetypes : s:get_filetypes({})
+  let filetypes = context_filetype#filetypes()
   let context = s:get_nest(base_filetype, filetypes)
-  if context.range == s:null_range
+  if context.range == s:null_range && !has_key(context, 'synname')
     let context.filetype = base_filetype
   endif
   return context
 endfunction
 
 
-function! context_filetype#get_filetype(...)
+function! context_filetype#get_filetype(...) abort
   let base_filetype = get(a:, 1, &filetype)
   return context_filetype#get(base_filetype).filetype
 endfunction
 
-function! context_filetype#get_filetypes(...)
+function! context_filetype#get_filetypes(...) abort
   let filetype = call('context_filetype#get_filetype', a:000)
 
   let filetypes = [filetype]
@@ -65,7 +64,7 @@ function! context_filetype#get_filetypes(...)
   return filetypes
 endfunction
 
-function! context_filetype#get_same_filetypes(...)
+function! context_filetype#get_same_filetypes(...) abort
   let filetype = call('context_filetype#get_filetype', a:000)
 
   let filetypes = []
@@ -81,14 +80,21 @@ function! context_filetype#get_same_filetypes(...)
 endfunction
 
 
-function! context_filetype#get_range(...)
+function! context_filetype#get_range(...) abort
   let base_filetype = get(a:, 1, &filetype)
   return context_filetype#get(base_filetype).range
 endfunction
 
 
-function! context_filetype#default_filetypes()
-  return copy(s:default_filetypes)
+function! context_filetype#default_filetypes() abort
+  return deepcopy(s:default_filetypes)
+endfunction
+
+function! context_filetype#filetypes() abort
+  if exists('b:context_filetype_filetypes')
+    return deepcopy(b:context_filetype_filetypes)
+  endif
+  return extend(deepcopy(s:default_filetypes), deepcopy(g:context_filetype#filetypes))
 endfunction
 
 
@@ -385,15 +391,28 @@ let s:default_filetypes = {
       \    'end': '^//}', 'filetype' : '\1',
       \   },
       \ ],
+      \ 'javascript': [
+      \   {
+      \    'synname_pattern': '^jsx',
+      \    'filetype' : 'jsx',
+      \   },
+      \   {
+      \    'start': '^\s*{/\*',
+      \    'end': '\*/}', 'filetype' : 'jsx',
+      \   },
+      \ ],
+      \ 'typescript': [
+      \   {
+      \    'synname_pattern': '^jsx',
+      \    'filetype' : 'tsx',
+      \   },
+      \   {
+      \    'start': '^\s*{/\*',
+      \    'end': '\*/}', 'filetype' : 'tsx',
+      \   },
+      \ ],
 \}
 
-
-function! s:get_filetypes(filetypes)
-  return extend(extend(
-        \ copy(s:default_filetypes), g:context_filetype#filetypes),
-        \ a:filetypes
-        \)
-endfunction
 
 " s:default_same_filetypes {{{
 let s:default_same_filetypes = {
@@ -446,7 +465,7 @@ let s:default_same_filetypes = {
 \}
 
 
-function! s:get_same_filetypes(filetype)
+function! s:get_same_filetypes(filetype) abort
   let same_filetypes = extend(copy(s:default_same_filetypes),
         \ g:context_filetype#same_filetypes)
   return split(get(same_filetypes, a:filetype,
@@ -454,35 +473,35 @@ function! s:get_same_filetypes(filetype)
 endfunction
 
 
-function! s:stopline_forward()
+function! s:stopline_forward() abort
   let stopline_forward = line('.') + g:context_filetype#search_offset
   return (stopline_forward > line('$')) ? line('$') : stopline_forward
 endfunction
 
 
-function! s:stopline_back()
+function! s:stopline_back() abort
   let stopline_back = line('.') - g:context_filetype#search_offset
   return (stopline_back <= 1) ? 1 : stopline_back
 endfunction
 
 
 " a <= b
-function! s:pos_less_equal(a, b)
+function! s:pos_less_equal(a, b) abort
   return a:a[0] == a:b[0] ? a:a[1] <= a:b[1] : a:a[0] <= a:b[0]
 endfunction
 
 
-function! s:is_in(start, end, pos)
+function! s:is_in(start, end, pos) abort
   " start <= pos && pos <= end
   return s:pos_less_equal(a:start, a:pos) && s:pos_less_equal(a:pos, a:end)
 endfunction
 
 
-function! s:file_range()
+function! s:file_range() abort
   return [[1, 1], [line('$'), len(getline('$'))+1]]
 endfunction
 
-function! s:replace_submatch(pattern, match_list)
+function! s:replace_submatch(pattern, match_list) abort
   let num_list = matchlist(a:pattern, '\\\zs\d\+\ze')
   let pattern = a:pattern
   for num in num_list
@@ -498,7 +517,7 @@ let s:null_pos = [0, 0]
 let s:null_range = [[0, 0], [0, 0]]
 
 
-function! s:search_range(start_pattern, end_pattern)
+function! s:search_range(start_pattern, end_pattern) abort
   let stopline_forward = s:stopline_forward()
   let stopline_back    = s:stopline_back()
 
@@ -520,7 +539,7 @@ function! s:search_range(start_pattern, end_pattern)
   let start[1] += 1
 
   let end_pattern = a:end_pattern
-  if end_pattern =~ '\\\d\+'
+  if end_pattern =~# '\\\d\+'
     let lines = getline(start[0], line('.'))
     let match_list = matchlist(join(lines, "\n"), a:start_pattern)
     let end_pattern = s:replace_submatch(end_pattern, match_list)
@@ -559,7 +578,7 @@ let s:null_context = {
 \}
 
 
-function! s:get_context(filetype, context_filetypes, search_range)
+function! s:get_context(filetype, context_filetypes, search_range) abort
   let base_filetype = empty(a:filetype) ? 'nothing' : a:filetype
   let context_filetypes = get(a:context_filetypes, base_filetype, [])
   if empty(context_filetypes)
@@ -569,6 +588,16 @@ function! s:get_context(filetype, context_filetypes, search_range)
   let pos = [line('.'), col('.')]
 
   for context in context_filetypes
+    if has_key(context, 'synname_pattern')
+      for id in synstack(line('.'), col('.'))
+        let synname = synIDattr(id, 'name')
+        if synname =~# context.synname_pattern
+          return {'filetype' : context.filetype, 'range': s:null_range, 'synname': synname}
+        endif
+      endfor
+      continue
+    endif
+
     let range = s:search_range(context.start, context.end)
 
     " Set cursor position
@@ -583,7 +612,7 @@ function! s:get_context(filetype, context_filetypes, search_range)
           \  && s:is_in(a:search_range[0], a:search_range[1], range[0])
           \  && s:is_in(a:search_range[0], a:search_range[1], range[1])
       let context_filetype = context.filetype
-      if context.filetype =~ '\\\d\+'
+      if context.filetype =~# '\\\d\+'
         let stopline_back = s:stopline_back()
         let lines = getline(
               \ searchpos(context.start, 'nbW', stopline_back)[0],
@@ -600,7 +629,7 @@ function! s:get_context(filetype, context_filetypes, search_range)
 endfunction
 
 
-function! s:get_nest_impl(filetype, context_filetypes, prev_context)
+function! s:get_nest_impl(filetype, context_filetypes, prev_context) abort
   let context = s:get_context(a:filetype,
         \ a:context_filetypes, a:prev_context.range)
   if context.range != s:null_range && context.filetype !=# a:filetype
@@ -611,12 +640,12 @@ function! s:get_nest_impl(filetype, context_filetypes, prev_context)
 endfunction
 
 
-function! s:get_nest(filetype, context_filetypes)
+function! s:get_nest(filetype, context_filetypes) abort
   let context = s:get_context(a:filetype, a:context_filetypes, s:file_range())
   return s:get_nest_impl(context.filetype, a:context_filetypes, context)
 endfunction
 
-function! s:uniq(list)
+function! s:uniq(list) abort
   let dict = {}
   for item in a:list
     if item != '' && !has_key(dict, item)
