@@ -33,8 +33,13 @@ g:context_filetype#filetypes			*g:context_filetype#filetypes*
 		The keys and values are below.
 		"filetype" : includes filetype name.
 		"start" : filetype start pattern.
-		"end" : filetype end pattern.  You can use \1 to refer start's
-			matched pattern.
+		"end" : filetype end pattern.
+
+		The patterns in "start" and "end" are always interpreted as if
+		'magic' is set, ignoring the actual value of the 'magic'
+		option.
+		You can use "\0" through "\9" to refer to "start"'s match and
+		sub-matches in "end" and "filetype".
 >
 		" Examples:
 		if !exists('g:context_filetype#filetypes')
@@ -48,6 +53,15 @@ g:context_filetype#filetypes			*g:context_filetype#filetypes*
 <
 		Because it is complicated, refer to s:initialize() in
 		autoload/context_filetype.vim for the initial value.
+
+		NOTE: If you change the magic-ness of an "end" pattern,
+		change the magic-ness again immediately after each backref,
+		even if you repeat the previous change.
+		E.g., '\vfoo\1\vbar'.
+		(Internally, a "\m" is inserted into the pattern after each
+		backref, but do not rely on this.)
+		If your patterns do not contain "\m", "\M", "\v", or "\V",
+		all this can be safely ignored.
 
 b:context_filetype_filetypes			*b:context_filetype_filetypes*
 		It is the buffer variable version of
