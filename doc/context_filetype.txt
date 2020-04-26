@@ -54,15 +54,6 @@ g:context_filetype#filetypes			*g:context_filetype#filetypes*
 		Because it is complicated, refer to s:initialize() in
 		autoload/context_filetype.vim for the initial value.
 
-		NOTE: If you change the magic-ness of an "end" pattern,
-		change the magic-ness again immediately after each backref,
-		even if you repeat the previous change.
-		E.g., '\vfoo\1\vbar'.
-		(Internally, a "\m" is inserted into the pattern after each
-		backref, but do not rely on this.)
-		If your patterns do not contain "\m", "\M", "\v", or "\V",
-		all this can be safely ignored.
-
 b:context_filetype_filetypes			*b:context_filetype_filetypes*
 		It is the buffer variable version of
 		|g:context_filetype#filetypes|.
