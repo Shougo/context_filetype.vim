@@ -521,8 +521,10 @@ function! s:replace_submatch_pattern(pattern, match_list) abort
         let backref_end += 2
       endif
     endwhile
-    let pattern .= a:pattern[backref_end_prev : backref_start - 1]
-        \ . '\V'
+    if backref_start != 0
+      let pattern .= a:pattern[backref_end_prev : backref_start - 1]
+    endif
+    let pattern .= '\V'
         \ . escape(a:match_list[a:pattern[backref_start + 1]], '\')
         \ . magic
     let backref_end_prev = backref_end
@@ -675,5 +677,3 @@ function! s:uniq(list) abort
 
   return values(dict)
 endfunction
-
-" vim: set tabstop=2 expandtab:
