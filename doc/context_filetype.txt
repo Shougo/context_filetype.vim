@@ -33,8 +33,13 @@ g:context_filetype#filetypes			*g:context_filetype#filetypes*
 		The keys and values are below.
 		"filetype" : includes filetype name.
 		"start" : filetype start pattern.
-		"end" : filetype end pattern.  You can use \1 to refer start's
-			matched pattern.
+		"end" : filetype end pattern.
+
+		The patterns in "start" and "end" are always interpreted as if
+		'magic' is set, ignoring the actual value of the 'magic'
+		option.
+		You can use "\0" through "\9" to refer to "start"'s match and
+		sub-matches in "end" and "filetype".
 >
 		" Examples:
 		if !exists('g:context_filetype#filetypes')

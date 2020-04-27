@@ -502,14 +502,34 @@ function! s:file_range() abort
 endfunction
 
 function! s:replace_submatch(pattern, match_list) abort
-  let num_list = matchlist(a:pattern, '\\\zs\d\+\ze')
-  let pattern = a:pattern
-  for num in num_list
-    if num
-      let pattern = substitute(pattern, '\\'.num, a:match_list[num], 'g')
-    endif
-  endfor
-  return pattern
+  return substitute(a:pattern, '\\\@>\(\d\)',
+      \ {m -> a:match_list[m[1]]}, 'g')
+endfunction
+
+function! s:replace_submatch_pattern(pattern, match_list) abort
+  let l:pattern = ''
+  let l:backref_end_prev = 0
+  let l:backref_start = match(a:pattern, '\\\@>\d')
+  let l:backref_end = l:backref_start + 2
+  let l:magic = '\m'
+  let l:magic_start = match(a:pattern, '\\\@>[vmMV]')
+  while 0 <= l:backref_start
+    while 0 <= l:magic_start && l:magic_start <= l:backref_end
+      let l:magic = a:pattern[l:magic_start : l:magic_start + 1]
+      let l:magic_start = match(a:pattern, '\\\@>[vmMV]', l:magic_start + 2)
+      if l:magic_start == l:backref_end
+        let l:backref_end += 2
+      endif
+    endwhile
+    let l:pattern .= a:pattern[l:backref_end_prev : l:backref_start - 1]
+        \ . '\V'
+        \ . escape(a:match_list[a:pattern[l:backref_start + 1]], '\')
+        \ . l:magic
+    let l:backref_end_prev = l:backref_end
+    let l:backref_start = match(a:pattern, '\\\@>\d', l:backref_end_prev)
+    let l:backref_end = l:backref_start + 2
+  endwhile
+  return l:pattern . a:pattern[l:backref_end_prev : -1]
 endfunction
 
 
@@ -539,10 +559,10 @@ function! s:search_range(start_pattern, end_pattern) abort
   let start[1] += 1
 
   let end_pattern = a:end_pattern
-  if end_pattern =~# '\\\d\+'
+  if end_pattern =~# '\\\@>\d'
     let lines = getline(start[0], line('.'))
     let match_list = matchlist(join(lines, "\n"), a:start_pattern)
-    let end_pattern = s:replace_submatch(end_pattern, match_list)
+    let end_pattern = s:replace_submatch_pattern(end_pattern, match_list)
   endif
 
   let end_forward = searchpos(end_pattern, 'ncW', stopline_forward)
@@ -612,7 +632,7 @@ function! s:get_context(filetype, context_filetypes, search_range) abort
           \  && s:is_in(a:search_range[0], a:search_range[1], range[0])
           \  && s:is_in(a:search_range[0], a:search_range[1], range[1])
       let context_filetype = context.filetype
-      if context.filetype =~# '\\\d\+'
+      if context.filetype =~# '\\\@>\d'
         let stopline_back = s:stopline_back()
         let lines = getline(
               \ searchpos(context.start, 'nbW', stopline_back)[0],
@@ -655,3 +675,5 @@ function! s:uniq(list) abort
 
   return values(dict)
 endfunction
+
+" vim: set tabstop=2 expandtab:
