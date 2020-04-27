@@ -507,29 +507,29 @@ function! s:replace_submatch(pattern, match_list) abort
 endfunction
 
 function! s:replace_submatch_pattern(pattern, match_list) abort
-  let l:pattern = ''
-  let l:backref_end_prev = 0
-  let l:backref_start = match(a:pattern, '\\\@>\d')
-  let l:backref_end = l:backref_start + 2
-  let l:magic = '\m'
-  let l:magic_start = match(a:pattern, '\\\@>[vmMV]')
-  while 0 <= l:backref_start
-    while 0 <= l:magic_start && l:magic_start <= l:backref_end
-      let l:magic = a:pattern[l:magic_start : l:magic_start + 1]
-      let l:magic_start = match(a:pattern, '\\\@>[vmMV]', l:magic_start + 2)
-      if l:magic_start == l:backref_end
-        let l:backref_end += 2
+  let pattern = ''
+  let backref_end_prev = 0
+  let backref_start = match(a:pattern, '\\\@>\d')
+  let backref_end = backref_start + 2
+  let magic = '\m'
+  let magic_start = match(a:pattern, '\\\@>[vmMV]')
+  while 0 <= backref_start
+    while 0 <= magic_start && magic_start <= backref_end
+      let magic = a:pattern[magic_start : magic_start + 1]
+      let magic_start = match(a:pattern, '\\\@>[vmMV]', magic_start + 2)
+      if magic_start == backref_end
+        let backref_end += 2
       endif
     endwhile
-    let l:pattern .= a:pattern[l:backref_end_prev : l:backref_start - 1]
+    let pattern .= a:pattern[backref_end_prev : backref_start - 1]
         \ . '\V'
-        \ . escape(a:match_list[a:pattern[l:backref_start + 1]], '\')
-        \ . l:magic
-    let l:backref_end_prev = l:backref_end
-    let l:backref_start = match(a:pattern, '\\\@>\d', l:backref_end_prev)
-    let l:backref_end = l:backref_start + 2
+        \ . escape(a:match_list[a:pattern[backref_start + 1]], '\')
+        \ . magic
+    let backref_end_prev = backref_end
+    let backref_start = match(a:pattern, '\\\@>\d', backref_end_prev)
+    let backref_end = backref_start + 2
   endwhile
-  return l:pattern . a:pattern[l:backref_end_prev : -1]
+  return pattern . a:pattern[backref_end_prev : -1]
 endfunction
 
 
