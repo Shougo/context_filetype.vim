@@ -325,6 +325,10 @@ let s:default_filetypes = {
       \    'start' : '^\s*```\s*\(\h\w*\)',
       \    'end' : '^\s*```$', 'filetype' : '\1',
       \   },
+      \   {
+      \    'start' : '\%^-\{3,}.*$',
+      \    'end' : '\_^-\{3,}.*$', 'filetype' : 'yaml'
+      \   },
       \ ],
       \ 'haml': [
       \   {
