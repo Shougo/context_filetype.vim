@@ -242,12 +242,6 @@ let s:default_filetypes = {
       \    'end': '\1\@<!\1\1\@!', 'filetype': 'lua',
       \   },
       \ ],
-      \ 'perl6': [
-      \   {
-      \    'start': 'Q:PIR\s*{',
-      \    'end': '}', 'filetype': 'pir',
-      \   },
-      \ ],
       \ 'python': [
       \   {
       \    'start': 'vim.command\s*(\([''"]\)',
@@ -367,7 +361,7 @@ let s:default_filetypes = {
       \ ],
       \ 'toml': [
       \   {
-      \    'start': '\<\%(hook_\%('.
+      \    'start': '\<\%(#\s*\)\@<!\%(hook_\%('.
       \             'add\|source\|post_source\|post_update'.
       \             '\)\|[_a-z]\+'.
       \             '\)\s*=\s*\('."'''".'\|"""\)',
@@ -559,6 +553,7 @@ function! s:search_range(start_pattern, end_pattern) abort
     let start = [line('.'), matchend(cur_text, curline_pattern)]
   else
     let start = searchpos(a:start_pattern, 'bnceW', stopline_back)
+    echomsg curline_pattern
   endif
   if start == s:null_pos
     return s:null_range
