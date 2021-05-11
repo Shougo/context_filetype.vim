@@ -4,8 +4,6 @@
 " License: MIT license
 "=============================================================================
 
-scriptencoding utf-8
-
 let g:context_filetype#filetypes = get(g:,
       \ 'context_filetype#filetypes', {})
 
@@ -14,6 +12,9 @@ let g:context_filetype#ignore_composite_filetypes = get(g:,
 
 let g:context_filetype#same_filetypes = get(g:,
       \ 'context_filetype#same_filetypes', {})
+
+let g:context_filetype#ignore_patterns = get(g:,
+      \ 'context_filetype#ignore_patterns', {})
 
 let g:context_filetype#search_offset = get(g:,
       \ 'context_filetype#search_offset', 200)
@@ -85,7 +86,6 @@ function! context_filetype#get_range(...) abort
   return context_filetype#get(base_filetype).range
 endfunction
 
-
 function! context_filetype#default_filetypes() abort
   return deepcopy(g:context_filetype#default#_filetypes)
 endfunction
@@ -98,6 +98,13 @@ function! context_filetype#filetypes() abort
         \ deepcopy(g:context_filetype#filetypes))
 endfunction
 
+function! context_filetype#ignore_patterns() abort
+  if exists('b:context_filetype_ignore_patterns')
+    return deepcopy(b:context_filetype_ignore_patterns)
+  endif
+  return extend(deepcopy(g:context_filetype#defaults#_ignore_patterns),
+        \ deepcopy(g:context_filetype#ignore_patterns))
+endfunction
 
 function! s:get_same_filetypes(filetype) abort
   let same_filetypes = extend(
@@ -175,7 +182,7 @@ let s:null_pos = [0, 0]
 let s:null_range = [[0, 0], [0, 0]]
 
 
-function! s:search_range(start_pattern, end_pattern) abort
+function! s:search_range(start_pattern, end_pattern, ignore_pattern) abort
   let stopline_forward = s:stopline_forward()
   let stopline_back    = s:stopline_back()
 
@@ -185,11 +192,12 @@ function! s:search_range(start_pattern, end_pattern) abort
         \      matchstr(getline('.'),
         \         '^.*\%' . (mode() ==# 'i' ? col('.') : col('.') - 1)
         \         . 'c' . (mode() ==# 'i' ? '' : '.'))
-  let curline_pattern = a:start_pattern . '\ze.\{-}$'
+  let start_pattern = a:ignore_pattern . a:start_pattern
+  let curline_pattern = start_pattern . '\ze.\{-}$'
   if cur_text =~# curline_pattern
     let start = [line('.'), matchend(cur_text, curline_pattern)]
   else
-    let start = searchpos(a:start_pattern, 'bnceW', stopline_back)
+    let start = searchpos(start_pattern, 'bnceW', stopline_back)
   endif
   if start == s:null_pos
     return s:null_range
@@ -199,7 +207,7 @@ function! s:search_range(start_pattern, end_pattern) abort
   let end_pattern = a:end_pattern
   if end_pattern =~# '\\\@>\d'
     let lines = getline(start[0], line('.'))
-    let match_list = matchlist(join(lines, "\n"), a:start_pattern)
+    let match_list = matchlist(join(lines, "\n"), start_pattern)
     let end_pattern = s:replace_submatch_pattern(end_pattern, match_list)
   endif
 
@@ -245,8 +253,14 @@ function! s:get_context(filetype, context_filetypes, search_range) abort
 
   let pos = [line('.'), col('.')]
 
-  " Todo: neovim treesitter support
+  let ignore_patterns = get(context_filetype#ignore_patterns(),
+        \ base_filetype, [])
+
+  let ignore_pattern = empty(ignore_patterns) ? '' :
+        \ '\%(' . join(ignore_patterns, '|') . '\)\@<!'
+
   for context in context_filetypes
+    " Todo: neovim treesitter support
     if has_key(context, 'synname_pattern')
       for id in synstack(line('.'), col('.'))
         let synname = synIDattr(id, 'name')
@@ -260,7 +274,7 @@ function! s:get_context(filetype, context_filetypes, search_range) abort
       continue
     endif
 
-    let range = s:search_range(context.start, context.end)
+    let range = s:search_range(context.start, context.end, ignore_pattern)
 
     " Set cursor position
     let start = range[0]
@@ -273,15 +287,15 @@ function! s:get_context(filetype, context_filetypes, search_range) abort
           \  && s:is_in(start, end, pos)
           \  && s:is_in(a:search_range[0], a:search_range[1], range[0])
           \  && s:is_in(a:search_range[0], a:search_range[1], range[1])
-      let context_filetype = context.filetype
-      if context.filetype =~# '\\\@>\d'
+      let context_filetype = get(context, 'filetype', a:filetype)
+      if context_filetype =~# '\\\@>\d'
         let stopline_back = s:stopline_back()
         let lines = getline(
               \ searchpos(context.start, 'nbW', stopline_back)[0],
               \ line('.')
               \ )
         let match_list = matchlist(join(lines, "\n"), context.start)
-        let context_filetype = s:replace_submatch(context.filetype, match_list)
+        let context_filetype = s:replace_submatch(context_filetype, match_list)
       endif
       return {'filetype' : context_filetype, 'range' : range}
     endif

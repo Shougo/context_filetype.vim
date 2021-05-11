@@ -266,7 +266,7 @@ let g:context_filetype#defaults#_filetypes = {
       \ ],
       \ 'toml': [
       \   {
-      \    'start': '\<\%(#\s*\)\@<!\%(hook_\%('.
+      \    'start': '\<\%(hook_\%('.
       \             'add\|source\|post_source\|post_update'.
       \             '\)\|[_a-z]\+'.
       \             '\)\s*=\s*\('."'''".'\|"""\)',
@@ -331,38 +331,18 @@ let g:context_filetype#defaults#_same_filetypes = {
       \ 'less': 'css',
       \ 'tex': 'bib,plaintex',
       \ 'plaintex': 'bib,tex',
-      \ 'lingr-say': 'lingr-messages,lingr-members',
-      \ 'J6uil_say': 'J6uil',
       \ 'vimconsole': 'vim',
-      \
-      \ 'int-irb': 'ruby',
-      \ 'int-ghci': 'haskell',
-      \ 'int-hugs': 'haskell',
-      \ 'int-python': 'python',
-      \ 'int-python3': 'python',
-      \ 'int-ipython': 'python',
-      \ 'int-ipython3': 'python',
-      \ 'int-gosh': 'scheme',
-      \ 'int-clisp': 'lisp',
-      \ 'int-erl': 'erlang',
-      \ 'int-zsh': 'zsh',
-      \ 'int-bash': 'bash',
-      \ 'int-sh': 'sh',
-      \ 'int-cmdproxy': 'dosbatch',
-      \ 'int-powershell': 'powershell',
-      \ 'int-perlsh': 'perl',
-      \ 'int-ocaml': 'ocaml',
-      \ 'int-clj': 'clojure',
-      \ 'int-lein': 'clojure',
-      \ 'int-sml': 'sml',
-      \ 'int-smlsharp': 'sml',
-      \ 'int-js': 'javascript',
-      \ 'int-kjs': 'javascript',
-      \ 'int-rhino': 'javascript',
-      \ 'int-coffee': 'coffee',
-      \ 'int-gdb': 'gdb',
-      \ 'int-scala': 'scala',
-      \ 'int-nyaos': 'nyaos',
-      \ 'int-php': 'php',
       \}
 
+
+let g:context_filetype#defaults#_ignore_patterns = {}
+
+
+let g:context_filetype#defaults#_comment_patterns = {
+      \ 'toml': [
+      \   {
+      \    'start': '^\s*#',
+      \    'end': '$',
+      \   },
+      \ ],
+      \}
