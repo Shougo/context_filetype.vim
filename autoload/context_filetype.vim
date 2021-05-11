@@ -43,7 +43,7 @@ function! context_filetype#get_filetypes(...) abort
   let filetype = call('context_filetype#get_filetype', a:000)
 
   let filetypes = [filetype]
-  if filetype =~ '\.'
+  if filetype =~# '\.'
     if has_key(g:context_filetype#ignore_composite_filetypes, filetype)
       let filetypes =
             \ [g:context_filetype#ignore_composite_filetypes[filetype]]
@@ -94,7 +94,8 @@ function! context_filetype#filetypes() abort
   if exists('b:context_filetype_filetypes')
     return deepcopy(b:context_filetype_filetypes)
   endif
-  return extend(deepcopy(s:default_filetypes), deepcopy(g:context_filetype#filetypes))
+  return extend(deepcopy(s:default_filetypes),
+        \ deepcopy(g:context_filetype#filetypes))
 endfunction
 
 
@@ -614,7 +615,10 @@ function! s:get_context(filetype, context_filetypes, search_range) abort
       for id in synstack(line('.'), col('.'))
         let synname = synIDattr(id, 'name')
         if synname =~# context.synname_pattern
-          return {'filetype' : context.filetype, 'range': s:null_range, 'synname': synname}
+          return {
+                \ 'filetype' : context.filetype,
+                \ 'range': s:null_range, 'synname': synname
+                \ }
         endif
       endfor
       continue
@@ -663,14 +667,15 @@ endfunction
 
 
 function! s:get_nest(filetype, context_filetypes) abort
-  let context = s:get_context(a:filetype, a:context_filetypes, s:file_range())
+  let context = s:get_context(
+        \ a:filetype, a:context_filetypes, s:file_range())
   return s:get_nest_impl(context.filetype, a:context_filetypes, context)
 endfunction
 
 function! s:uniq(list) abort
   let dict = {}
   for item in a:list
-    if item != '' && !has_key(dict, item)
+    if item !=# '' && !has_key(dict, item)
       let dict[item] = item
     endif
   endfor
