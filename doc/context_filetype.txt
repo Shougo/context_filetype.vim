@@ -45,8 +45,6 @@ g:context_filetype#filetypes			*g:context_filetype#filetypes*
 		if !exists('g:context_filetype#filetypes')
 		  let g:context_filetype#filetypes = {}
 		endif
-		let g:context_filetype#filetypes.perl6 =
-		\ [{'filetype' : 'pir', 'start' : 'Q:PIR\s*{', 'end' : '}'}]
 		let g:context_filetype#filetypes.vim =
 		\ [{'filetype' : 'python',
 		\   'start' : '^\s*python <<\s*\(\h\w*\)', 'end' : '^\1'}]

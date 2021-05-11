@@ -351,7 +351,6 @@ let g:context_filetype#defaults#_same_filetypes = {
       \ 'int-cmdproxy': 'dosbatch',
       \ 'int-powershell': 'powershell',
       \ 'int-perlsh': 'perl',
-      \ 'int-perl6': 'perl6',
       \ 'int-ocaml': 'ocaml',
       \ 'int-clj': 'clojure',
       \ 'int-lein': 'clojure',
