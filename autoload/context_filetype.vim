@@ -553,7 +553,6 @@ function! s:search_range(start_pattern, end_pattern) abort
     let start = [line('.'), matchend(cur_text, curline_pattern)]
   else
     let start = searchpos(a:start_pattern, 'bnceW', stopline_back)
-    echomsg curline_pattern
   endif
   if start == s:null_pos
     return s:null_range
@@ -609,6 +608,7 @@ function! s:get_context(filetype, context_filetypes, search_range) abort
 
   let pos = [line('.'), col('.')]
 
+  " Todo: neovim treesitter support
   for context in context_filetypes
     if has_key(context, 'synname_pattern')
       for id in synstack(line('.'), col('.'))
