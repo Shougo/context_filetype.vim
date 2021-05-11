@@ -111,7 +111,7 @@ g:context_filetype#ignore_patterns
 >
 		" Examples:
 		let g:context_filetype#ignore_patterns = {
-			\ 'toml': ['^\s*#'],
+			\ 'toml': ['^\s*#\s*'],
 			\ }
 <
 		Default value is {}.
