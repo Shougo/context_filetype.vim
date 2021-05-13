@@ -87,7 +87,7 @@ function! context_filetype#get_range(...) abort
 endfunction
 
 function! context_filetype#default_filetypes() abort
-  return deepcopy(g:context_filetype#default#_filetypes)
+  return deepcopy(g:context_filetype#defaults#_filetypes)
 endfunction
 
 function! context_filetype#filetypes() abort
