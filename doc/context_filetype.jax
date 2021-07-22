@@ -75,6 +75,7 @@ CONTENTS					*context_filetype-contents*
  css
 
 - "markdown"
+ mathjax
 
 - "haml"
  ruby
