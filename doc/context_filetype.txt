@@ -34,6 +34,7 @@ g:context_filetype#filetypes			*g:context_filetype#filetypes*
 		"filetype" : includes filetype name.
 		"start" : filetype start pattern.
 		"end" : filetype end pattern.
+		Note that "start" and "end" patterns shouldn't be identical.
 
 		The patterns in "start" and "end" are always interpreted as if
 		'magic' is set, ignoring the actual value of the 'magic'
