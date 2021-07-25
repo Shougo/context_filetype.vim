@@ -228,6 +228,14 @@ let g:context_filetype#defaults#_filetypes = {
       \    'start' : '\%^-\{3,}.*$',
       \    'end' : '\_^-\{3,}.*$', 'filetype' : 'yaml'
       \   },
+      \   {
+      \    'start' : '\\(',
+      \    'end' : '\\)', 'filetype' : 'tex'
+      \   },
+      \   {
+      \    'start' : '\\[',
+      \    'end' : '\\]', 'filetype' : 'tex'
+      \   },
       \ ],
       \ 'haml': [
       \   {

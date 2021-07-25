@@ -75,6 +75,7 @@ CONTENTS					*context_filetype-contents*
  css
 
 - "markdown"
+ mathjax
 
 - "haml"
  ruby
@@ -97,6 +98,8 @@ g:context_filetype#filetypes			*g:context_filetype#filetypes*
 		"filetype" : 判定を行う filetype
 			      "end" または "filetype" に \1 が設定されている場
 			      合は "start" にマッチした値になります。
+
+		"start"、"end" パターンは異なるものを指定する必要があります。
 >
 		" Examples:
 		let g:context_filetype#filetypes = {
