@@ -19,6 +19,9 @@ let g:context_filetype#ignore_patterns = get(g:,
 let g:context_filetype#search_offset = get(g:,
       \ 'context_filetype#search_offset', 200)
 
+let s:prev_context = {}
+let s:prev_filetype = ''
+
 function! context_filetype#version() abort
   return str2nr(printf('%02d%02d', 1, 0))
 endfunction
@@ -37,7 +40,19 @@ endfunction
 
 function! context_filetype#get_filetype(...) abort
   let base_filetype = get(a:, 1, &filetype)
-  return context_filetype#get(base_filetype).filetype
+  let context = {
+        \ 'bufnr': bufnr('%'),
+        \ 'filetype': base_filetype,
+        \ 'input': substitute(s:get_input(), '\w\+$', '', ''),
+        \ 'linenr': line('.'),
+        \ }
+  if context !=# s:prev_context
+    " Renew cache
+    let s:prev_context = context
+    let s:prev_filetype = context_filetype#get(base_filetype).filetype
+  endif
+
+  return s:prev_filetype
 endfunction
 
 function! context_filetype#get_filetypes(...) abort
@@ -331,4 +346,17 @@ function! s:uniq(list) abort
   endfor
 
   return values(dict)
+endfunction
+
+
+function! s:get_input() abort
+  let mode = mode()
+  let text = getline('.')
+  let input = (mode ==# 'i' ? (col('.')-1) : col('.')) >= len(text) ?
+        \      text :
+        \      matchstr(text,
+        \         '^.*\%' . (mode ==# 'i' ? col('.') : col('.') - 1)
+        \         . 'c' . (mode ==# 'i' ? '' : '.'))
+
+  return input
 endfunction
