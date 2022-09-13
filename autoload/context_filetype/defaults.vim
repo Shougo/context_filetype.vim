@@ -237,6 +237,24 @@ let g:context_filetype#defaults#_filetypes = {
       \    'end' : '\\]', 'filetype' : 'tex'
       \   },
       \ ],
+      \ 'pandoc': [
+      \   {
+      \    'start' : '^\s*```\s*\(\h\w*\)',
+      \    'end' : '^\s*```$', 'filetype' : '\1',
+      \   },
+      \   {
+      \    'start' : '\%^-\{3,}.*$',
+      \    'end' : '\_^-\{3,}.*$', 'filetype' : 'yaml'
+      \   },
+      \   {
+      \    'start' : '\\(',
+      \    'end' : '\\)', 'filetype' : 'tex'
+      \   },
+      \   {
+      \    'start' : '\\[',
+      \    'end' : '\\]', 'filetype' : 'tex'
+      \   },
+      \ ],
       \ 'haml': [
       \   {
       \    'start' : '^\s*-',
