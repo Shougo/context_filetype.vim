@@ -292,16 +292,14 @@ let g:context_filetype#defaults#_filetypes = {
       \ ],
       \ 'toml': [
       \   {
-      \    'start': '\<\%(hook_\%('.
+      \    'start': '\<hook_\%('.
       \             'add\|source\|post_source\|post_update'.
-      \             '\)\|[_a-z]\+'.
       \             '\)\s*=\s*\('."'''".'\|"""\)',
       \    'end': '\1', 'filetype': 'vim',
       \   },
       \   {
-      \    'start': '\<\%(lua_\%('.
+      \    'start': '\<lua_\%('.
       \             'add\|source\|post_source\|post_update'.
-      \             '\)\|[_a-z]\+'.
       \             '\)\s*=\s*\('."'''".'\|"""\)',
       \    'end': '\1', 'filetype': 'lua',
       \   },
