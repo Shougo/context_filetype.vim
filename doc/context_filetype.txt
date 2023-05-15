@@ -48,9 +48,13 @@ g:context_filetype#filetypes			*g:context_filetype#filetypes*
 		if !exists('g:context_filetype#filetypes')
 		  let g:context_filetype#filetypes = {}
 		endif
-		let g:context_filetype#filetypes.vim =
-		\ [{'filetype' : 'python',
-		\   'start' : '^\s*python <<\s*\(\h\w*\)', 'end' : '^\1'}]
+		let g:context_filetype#filetypes.vim = [
+		\   #{
+		\     filetype: 'python',
+		\     start: '^\s*python <<\s*\(\h\w*\)',
+		\     end: '^\1',
+		\   },
+		\ ]
 <
 		Because it is complicated, refer to
 		g:context_filetype#defaults#_filetypes for the initial
@@ -93,8 +97,8 @@ g:context_filetype#ignore_composite_filetypes
 		filetype.
 >
 		" Examples:
-		let g:context_filetype#ignore_composite_filetypes = {
-			\ 'ruby.spec' : 'ruby'
+		let g:context_filetype#ignore_composite_filetypes = #{
+			\   ruby.spec : 'ruby',
 			\ }
 <
 		If you open filetype like "ruby.spec", completion is
@@ -113,8 +117,8 @@ g:context_filetype#ignore_patterns
 		Note: The feature is slow.
 >
 		" Examples:
-		let g:context_filetype#ignore_patterns = {
-			\ 'toml': ['^\s*#\s*'],
+		let g:context_filetype#ignore_patterns = #{
+			\   toml: ['^\s*#\s*'],
 			\ }
 <
 		Default value is {}.
@@ -150,9 +154,9 @@ context_filetype#default_filetypes()
 context_filetype#filetypes()
 		Get the dictionary of all filetypes with
 		* |b:context_filetype_filetypes| (if defined)
-		* Or merged dictionary
-		  * |context_filetype#default_filetypes()|
-		  * |g:context_filetype#filetypes|
+		or merged dictionary
+		* |context_filetype#default_filetypes()|
+		* |g:context_filetype#filetypes|
 
 ==============================================================================
 vim:tw=78:ts=8:ft=help:norl:noet:fen:noet:

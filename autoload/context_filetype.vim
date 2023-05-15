@@ -4,6 +4,13 @@
 " License: MIT license
 "=============================================================================
 
+if !has('nvim-0.8') && v:version < 802
+  echohl WarningMsg
+  echomsg 'context_filetype.vim requires Vim 8.2+ or NeoVim 0.8+.'
+  echohl None
+  finish
+endif
+
 let g:context_filetype#filetypes = get(g:,
       \ 'context_filetype#filetypes', {})
 
@@ -23,7 +30,7 @@ let s:prev_context = {}
 let s:prev_filetype = ''
 
 function! context_filetype#version() abort
-  return str2nr(printf('%02d%02d', 1, 0))
+  return str2nr(printf('%02d%02d', 2, 0))
 endfunction
 
 
