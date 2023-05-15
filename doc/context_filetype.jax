@@ -10,17 +10,18 @@ CONTENTS					*context_filetype-contents*
 インターフェース	|context_filetype-interface|
   変数			  |context_filetype-variables|
   関数			  |context_filetype-functions|
-変更履歴		|context_filetype-changelog|
 
 ==============================================================================
-概要						*context_filetype-introduction*
+概要					*context_filetype-introduction*
 
-*context_filetype* はカーソル位置を基準とした、文脈から特定の filetype を判定す
-る為の Vim script ライブラリです。
+*context_filetype* はカーソル位置を基準とした、文脈から特定の filetype を判定
+する為の Vim script ライブラリです。
 コード中に他の言語を埋め込むような言語で利用する事が出来ます。
 
 また、このプラグインは他のプラグインから使用する事を想定して作られています。
 
+必要バージョン
+* Vim 8.2+ または NeoVim 0.8+.
 
 ==============================================================================
 サポート					*context_filetype-support*
