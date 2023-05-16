@@ -45,7 +45,7 @@ g:context_filetype#filetypes			*g:context_filetype#filetypes*
 		sub-matches in "end" and "filetype".
 >
 		" Examples:
-		if !exists('g:context_filetype#filetypes')
+		if !('g:context_filetype#filetypes'->exists())
 		  let g:context_filetype#filetypes = {}
 		endif
 		let g:context_filetype#filetypes.vim = [
@@ -74,7 +74,7 @@ g:context_filetype#same_filetypes
 		buffers.  If the key is "_", the value will be used for
 		default same filetypes.
 >
-		if !exists('g:context_filetype#same_filetypes')
+		if !('g:context_filetype#same_filetypes'->exists())
 		  let g:context_filetype#same_filetypes = {}
 		endif
 		" In c buffers, completes from cpp and d buffers.

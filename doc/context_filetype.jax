@@ -132,7 +132,7 @@ g:context_filetype#same_filetypes
 		各 filetype に対してカンマ区切りの文字列で設定する事ができま
 		す。
 >
-		if !exists('g:context_filetype#same_filetypes')
+		if !('g:context_filetype#same_filetypes'->exists())
 		  let g:context_filetype#same_filetypes = {}
 		endif
 		" In c buffers, completes from cpp and d buffers.
@@ -206,9 +206,9 @@ context_filetype#get([{filetype}])		*context_filetype#get()*
 		カーソル位置のコンテキスト情報を下記のようなフォーマットで返
 		す。
 >
-		{
-		  "filetype" : "vim",
-		  "range" : [[3, 2], [10, 2]]
+		#{
+		  filetype: vim,
+		  range: [[3, 2], [10, 2]],
 		}
 <
 		コンテキストの判定には {filetype} が使用され、{filetype} が渡
