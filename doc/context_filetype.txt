@@ -16,7 +16,7 @@ INTRODUCTION				*context_filetype-introduction*
 
 *context_filetype* provides functions to find fenced code blocks and their
 filetype.
-For example Javascript blocks inside of HTML.
+For example JavaScript blocks inside of HTML.
 The fenced code is detected by predefined regular expressions.
 
 Requirements:
@@ -121,7 +121,9 @@ g:context_filetype#ignore_patterns
 			\   toml: ['^\s*#\s*'],
 			\ }
 <
-		Default value is {}.
+		Because it is complicated, refer to
+		g:context_filetype#defaults#_ignore_patterns for the initial
+		value.
 
 					*g:context_filetype#search_offset*
 g:context_filetype#search_offset

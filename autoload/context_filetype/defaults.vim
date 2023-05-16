@@ -413,7 +413,9 @@ let g:context_filetype#defaults#_same_filetypes = #{
       \ }
 
 
-let g:context_filetype#defaults#_ignore_patterns = {}
+let g:context_filetype#defaults#_ignore_patterns = #{
+      \   toml: ['^\s*#\s*'],
+      \ }
 
 
 let g:context_filetype#defaults#_comment_patterns = #{
