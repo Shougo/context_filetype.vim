@@ -253,17 +253,29 @@ let g:context_filetype#defaults#_filetypes = #{
       \   toml: [
       \     #{
       \       start: '\<hook_\%('
-      \               .. 'add\|source\|post_source\|post_update'
+      \               .. 'add\|source\|post_source\|\w*_update\|'
       \               .. '\)\s*=\s*\(' .. "'''" .. '\|"""\)',
       \       end: '\1',
       \       filetype: 'vim',
       \     },
       \     #{
       \       start: '\<lua_\%('
-      \              .. 'add\|source\|post_source\|post_update'
+      \              .. 'add\|source\|post_source\|\w*_update'
       \              .. '\)\s*=\s*\(' .. "'''" .. '\|"""\)',
       \       end: '\1',
       \       filetype: 'lua',
+      \     },
+      \     #{
+      \       start: '\<lua_[[:alnum:]_-]*'
+      \              .. '\s*=\s*\(' .. "'''" .. '\|"""\)',
+      \       end: '\1',
+      \       filetype: 'lua',
+      \     },
+      \     #{
+      \       start: '\<[[:alnum:]_-]*'
+      \              .. '\s*=\s*\(' .. "'''" .. '\|"""\)',
+      \       end: '\1',
+      \       filetype: 'vim',
       \     },
       \   ],
       \   typescript: [
