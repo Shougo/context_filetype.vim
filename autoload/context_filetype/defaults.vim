@@ -97,12 +97,12 @@ let g:context_filetype#defaults#_filetypes = #{
       \   help: [
       \     #{
       \       start: '^>\%(vim\)\?\|\s>\%(vim\)\?$',
-      \       end: '^<\|^\S\|^$',
+      \       end: '^<\|^\S',
       \       filetype: 'vim',
       \     },
       \     #{
       \       start: '^>lua\|\s>lua$',
-      \       end: '^<\|^\S\|^$',
+      \       end: '^<\|^\S',
       \       filetype: 'lua',
       \     },
       \   ],
