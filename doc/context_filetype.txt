@@ -4,7 +4,7 @@ Version: 1.0
 Author : Shougo <Shougo.Matsu at gmail.com>
 License: MIT license
 
-CONTENTS					*context_filetype-contents*
+CONTENTS                                           *context_filetype-contents*
 
 Introduction		|context_filetype-introduction|
 Interface		|context_filetype-interface|
@@ -12,7 +12,7 @@ Interface		|context_filetype-interface|
   Functions		  |context_filetype-functions|
 
 ==============================================================================
-INTRODUCTION				*context_filetype-introduction*
+INTRODUCTION                                   *context_filetype-introduction*
 
 *context_filetype* provides functions to find fenced code blocks and their
 filetype.
@@ -22,13 +22,17 @@ The fenced code is detected by predefined regular expressions.
 Requirements:
 * Vim 8.2+ or NeoVim 0.8+.
 
+If you want to change filetype dynamically, you can use "vim-precious" plugin.
+
+https://github.com/osyo-manga/vim-precious
+
 ==============================================================================
-INTERFACE					*context_filetype-interface*
+INTERFACE                                         *context_filetype-interface*
 
 ------------------------------------------------------------------------------
-VARIABLES 					*context_filetype-variables*
+VARIABLES                                         *context_filetype-variables*
 
-g:context_filetype#filetypes			*g:context_filetype#filetypes*
+g:context_filetype#filetypes                    *g:context_filetype#filetypes*
 		It is a dictionary to define context filetypes.
 		The item is a list of dictionaries.
 
@@ -57,15 +61,15 @@ g:context_filetype#filetypes			*g:context_filetype#filetypes*
 		\ ]
 <
 		Because it is complicated, refer to
-		g:context_filetype#defaults#_filetypes for the initial
+		"g:context_filetype#defaults#_filetypes" for the initial
 		value.
 
-b:context_filetype_filetypes			*b:context_filetype_filetypes*
+b:context_filetype_filetypes                    *b:context_filetype_filetypes*
 		It is the buffer variable version of
 		|g:context_filetype#filetypes|.
 		If you set it, |g:context_filetype#filetypes| is ignored.
 
-					*g:context_filetype#same_filetypes*
+                                           *g:context_filetype#same_filetypes*
 g:context_filetype#same_filetypes
 		It is a dictionary to connect file type mutually.  It is
 		effective at time to let you refer to "c" and "cpp" mutually.
@@ -73,7 +77,7 @@ g:context_filetype#same_filetypes
 		If the value contains "_", context_filetype completes from all
 		buffers.  If the key is "_", the value will be used for
 		default same filetypes.
->
+>vim
 		if !('g:context_filetype#same_filetypes'->exists())
 		  let g:context_filetype#same_filetypes = {}
 		endif
@@ -90,12 +94,12 @@ g:context_filetype#same_filetypes
 		g:context_filetype#defaults#_same_filetypes for the initial
 		value.
 
-			*g:context_filetype#ignore_composite_filetypes*
+                               *g:context_filetype#ignore_composite_filetypes*
 g:context_filetype#ignore_composite_filetypes
 		It is a dictionary to ignore composite file type.
 		The dictionary's key is composite filetype and value is
 		filetype.
->
+>vim
 		" Examples:
 		let g:context_filetype#ignore_composite_filetypes = #{
 			\   ruby.spec : 'ruby',
@@ -108,14 +112,14 @@ g:context_filetype#ignore_composite_filetypes
 
 		Default value is {}.
 
-				*g:context_filetype#ignore_patterns*
+                                          *g:context_filetype#ignore_patterns*
 g:context_filetype#ignore_patterns
 		It is a dictionary to ignore start patterns.
 		The dictionary's key is filetype and value is ignore pattern.
 		It is useful to ignore comment outed texts.
 
 		Note: The feature is slow.
->
+>vim
 		" Examples:
 		let g:context_filetype#ignore_patterns = #{
 			\   toml: ['^\s*#\s*'],
@@ -125,40 +129,40 @@ g:context_filetype#ignore_patterns
 		g:context_filetype#defaults#_ignore_patterns for the initial
 		value.
 
-					*g:context_filetype#search_offset*
+                                            *g:context_filetype#search_offset*
 g:context_filetype#search_offset
 		It is the pattern search offset from current line.
 
 		Default value is 200.
 
 ------------------------------------------------------------------------------
-FUNCTIONS 					*context_filetype-functions*
+FUNCTIONS                                         *context_filetype-functions*
 
-context_filetype#version()			*context_filetype#version()*
-		Get version of context filetype library.
-		Note: It is useful for library installation check.
-
-context_filetype#get([{filetype}])		*context_filetype#get()*
-		Get completion filetype from {filetype}.
-		If you omit {filetype}, 'filetype' will be used.
-
-					*context_filetype#get_filetypes()*
-context_filetype#get_filetypes([{filetype}])
-		Get completion filetypes from {filetype}.
-		They contains same filetypes and composite filetypes.
-		If you omit {filetype}, 'filetype' will be used.
-
-					*context_filetype#default_filetypes()*
+                                        *context_filetype#default_filetypes()*
 context_filetype#default_filetypes()
 		Get the dictionary of all default filetypes.
 
-					*context_filetype#filetypes()*
+                                                *context_filetype#filetypes()*
 context_filetype#filetypes()
 		Get the dictionary of all filetypes with
 		* |b:context_filetype_filetypes| (if defined)
 		or merged dictionary
 		* |context_filetype#default_filetypes()|
 		* |g:context_filetype#filetypes|
+
+context_filetype#get([{filetype}])                    *context_filetype#get()*
+		Get completion filetype from {filetype}.
+		If you omit {filetype}, 'filetype' will be used.
+
+                                            *context_filetype#get_filetypes()*
+context_filetype#get_filetypes([{filetype}])
+		Get completion filetypes from {filetype}.
+		They contains same filetypes and composite filetypes.
+		If you omit {filetype}, 'filetype' will be used.
+
+context_filetype#version()                        *context_filetype#version()*
+		Get version of context filetype library.
+		Note: It is useful for library installation check.
 
 ==============================================================================
 vim:tw=78:ts=8:ft=help:norl:noet:fen:noet:
